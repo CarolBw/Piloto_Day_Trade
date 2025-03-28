@@ -10,16 +10,24 @@ load_dotenv()
 def obter_ultima_data_registrada(dados_limpos):
     """Obtém a última data registrada no arquivo CSV de dados limpos."""
     try:
-        ultimo_registro = pd.read_csv(dados_limpos, usecols=["data"], parse_dates=["data"]).tail(1)
-        if not ultimo_registro.empty:
-            ultima_data = ultimo_registro.iloc[0]["data"].date()
-            print(f"✅ Última data registrada no CSV: {ultima_data}")
-            return ultima_data
-    except FileNotFoundError:
-        print("Arquivo CSV não encontrado. Considerando processar limpeza em todos os dados existentes.")
+        if not os.path.exists(dados_limpos):
+            print("Arquivo CSV não encontrado. Considerando processar limpeza em todos os dados existentes.")
+            return None
+
+        df = pd.read_csv(dados_limpos, usecols=["data"], parse_dates=["data"])
+        
+        if df.empty or df["data"].isna().all():
+            print("CSV está vazio ou sem datas válidas. Considerando processar todos os dados.")
+            return None
+
+        ultima_data = df["data"].dropna().max().date()  # Garante que a data é válida
+        print(f"✅ Última data registrada no CSV: {ultima_data}")
+        return ultima_data
+
     except Exception as e:
         print(f"❌ Erro ao obter última data registrada: {e}")
-    return None
+        return None
+
 
 def obter_dados_brutos(dados_brutos, ultima_data):
     """Lê apenas os novos dados do CSV e processa corretamente o índice de datas."""
@@ -40,7 +48,9 @@ def obter_dados_brutos(dados_brutos, ultima_data):
         return None
 
 def limpar_organizar_dados(df):
-    """Realiza a limpeza e padronização dos dados."""
+    """Realiza a limpeza e padronização dos dados de mercado."""
+
+    # Mapeia os nomes das colunas do Yahoo Finance para nomes mais intuitivos
     mapeamento_colunas = {
         'Close': 'preco_fechamento',
         'High': 'preco_maximo',
@@ -48,24 +58,42 @@ def limpar_organizar_dados(df):
         'Open': 'preco_abertura',
         'Volume': 'volume'
     }
-    
+
+    # Renomeia as colunas conforme o mapeamento definido
     df.rename(columns=mapeamento_colunas, inplace=True)
-    df = df[~df.index.duplicated(keep="first")].copy()  # Garante que estamos trabalhando em uma cópia segura
-    df.loc[:, 'data'] = df.index.date
-    df.loc[:, 'hora'] = df.index.time
+
+    # Remove entradas duplicadas no índice faz uma cópia 
+    df = df[~df.index.duplicated(keep="first")].copy()
+
+    # Cria colunas data e hora, extraídas do índice
+    df['data'] = df.index.date
+    df['hora'] = df.index.time
+
+    # Remove o nome do índice para evitar conflitos ao resetá-lo
     df.index.name = None
+
+    # Reseta o índice, pois a data já foi extraída para uma coluna separada
     df.reset_index(drop=True, inplace=True)
 
-    df.loc[:, 'preco_abertura'] = df['preco_abertura'].astype(float).round(2)
-    df.loc[:, 'preco_minimo'] = df['preco_minimo'].astype(float).round(2)
-    df.loc[:, 'preco_maximo'] = df['preco_maximo'].astype(float).round(2)
-    df.loc[:, 'preco_fechamento'] = df['preco_fechamento'].astype(float).round(2)
-    df.loc[:, 'volume'] = pd.to_numeric(df['volume'], errors='coerce', downcast='integer')
-    df.loc[:, 'data'] = pd.to_datetime(df['data'])
+    # Converte e arredonda colunas numéricas para evitar erros e manter consistência nos valores
+    for col in ['preco_abertura', 'preco_minimo', 'preco_maximo', 'preco_fechamento']:
+        df[col] = pd.to_numeric(df[col], errors='coerce').round(2)
 
-  
+    # Converte a coluna 'volume' para número inteiro, tratando erros e valores inválidos
+    df['volume'] = pd.to_numeric(df['volume'], errors='coerce', downcast='integer')
+
+    # Converte a coluna 'data' para formato datetime para facilitar operações futuras
+    df['data'] = pd.to_datetime(df['data'])
+
+    # Remove as linhas onde TODAS as colunas numéricas são NaN
+    df.dropna(subset=['preco_abertura', 'preco_minimo', 'preco_maximo', 'preco_fechamento', 'volume'], how='all', inplace=True)
+
+    # Reorganiza as colunas
     df = df[['data', 'hora', 'preco_abertura', 'preco_minimo', 'preco_maximo', 'preco_fechamento', 'volume']]
+
+    # Ordena os dados da data mais recente para a mais antiga
     return df.sort_values(by='data', ascending=False)
+
 
 def processar_limpeza(dados_brutos, dados_limpos):
     """Executa o processo de limpeza dos dados."""
