@@ -50,7 +50,7 @@ def git_config():
         # Realizar o pull inicial para garantir que a branch main está sincronizada
         os.system("git pull origin main --allow-unrelated-histories --no-rebase")
 
-    print("✅ Configuração do Git concluída e sincronizada com a branch main!")
+    print(f"✅ Configuração do Git concluída e sincronizada com a branch main do repositório{REPO_URL}")
 
 
 if __name__ == "__main__":
