@@ -107,13 +107,13 @@ def limpeza_basica_dados(df):
 
     return df
 
+
 if __name__ == "__main__": 
     # Ler os dados brutos    
-    df = pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos2.csv", index_col=0, parse_dates=True, dayfirst=True)
+    df = pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos_recentes.csv", index_col=0, parse_dates=True, dayfirst=True)
     # Aplicar limpeza nos dados
     df_limpo = limpeza_basica_dados(df)
     # Salva os dados limpos em CSV    
-    conjunto_limpo = "dados_limpos"
-    df.to_csv(f"/content/Piloto_Day_Trade/data/{conjunto_limpo}.csv", index=False)
-    print(f"Dados limpos salvos em {conjunto_limpo}.csv\n")
+    df.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos_recentes.csv", index=False)
+    print(f"Dados limpos salvos em data/dados_limpos_recentes.csv")
 

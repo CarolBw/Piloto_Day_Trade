@@ -9,17 +9,17 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente
 load_dotenv()
 
-def carregar_dados(caminho):
+def carregar_dados(dados_transformados):
     """Carrega um CSV e retorna um DataFrame ou None se não existir."""
     try:
-        if os.path.exists(caminho):
-            df = pd.read_csv(caminho, parse_dates=["data"])
+        if os.path.exists(dados_transformados):
+            df = pd.read_csv(dados_transformados, parse_dates=["data"])
             return df if not df.empty else pd.DataFrame()
         else:
-            print(f"⚠️ Arquivo de dados não encontrado: {caminho}")
+            print(f"⚠️ Arquivo de dados não encontrado: {dados_transformados}")
             return pd.DataFrame()
     except Exception as e:
-        print(f"❌ Erro ao carregar {caminho}: {e}")
+        print(f"❌ Erro ao carregar {dados_transformados}: {e}")
         return pd.DataFrame()
 
 def obter_ultima_data(df):
@@ -119,8 +119,8 @@ def processar_transformacao(dados_limpos, dados_transformados):
         return df_transformado
 
 if __name__ == "__main__":
-    dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos.csv'
-    dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_teste1.csv'
+    dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos_recentes.csv'
+    dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_recentes.csv'
 
     df_transformado = processar_transformacao(dados_limpos, dados_transformados)
 
