@@ -15,7 +15,7 @@ def carregar_dados(caminho):
             df = pd.read_csv(caminho, parse_dates=["data"])
             return df if not df.empty else pd.DataFrame()
         else:
-            print(f"⚠️ Arquivo de dados não encontrado.")
+            print(f"⚠️ Arquivo de dados não encontrado: {caminho}")
             return pd.DataFrame()
     except Exception as e:
         print(f"❌ Erro ao carregar {caminho}: {e}")
@@ -73,10 +73,28 @@ def calcular_indicadores(df):
     df[['fechamento_normalizado', 'volume_normalizado']] = scaler.fit_transform(df[['fechamento', 'volume']])
     
     std_scaler = StandardScaler()
-    df[['rsi_padronizado', 'macd_padronizado']] = std_scaler.fit_transform(df[['rsi', 'MACD']].fillna(0))
+    df[['rsi_padronizado', 'macd_padronizado']] = std_scaler.fit_transform(df[['rsi', 'MACD']].fillna(0)) 
+   
+    # Criar colunas de data
+    df['ano'] = df['data'].dt.year
+    df['mes'] = df['data'].dt.month
+    df['dia'] = df['data'].dt.day
+    df['dia_da_semana'] = df['data'].dt.weekday  # 0 = segunda-feira, 6 = domingo
+
+    # Corrigir a coluna 'hora'
+    df['hora'] = df['hora'].astype(str).str.strip()
+    df.loc[~df['hora'].str.contains(":"), 'hora'] += ":00:00"
+    df['hora'] = pd.to_datetime(df['hora'], format='%H:%M:%S', errors='coerce').dt.time
+
+    # Criar colunas de hora e minuto
+    df['hora_num'] = df['hora'].apply(lambda x: x.hour if pd.notnull(x) else np.nan)
+    df['minuto'] = df['hora'].apply(lambda x: x.minute if pd.notnull(x) else np.nan)
+
+    # Criar coluna indicando se o mercado está aberto (entre 10h e 17h)
+    df['mercado_aberto'] = ((df['hora_num'] >= 10) & (df['hora_num'] <= 17)).astype(int)
     
     df.dropna(inplace=True)
-    
+
     return df
 
 def processar_transformacao(dados_limpos, dados_transformados):
@@ -100,18 +118,14 @@ def processar_transformacao(dados_limpos, dados_transformados):
         return df_transformado
 
 if __name__ == "__main__":
-    # Referencia o caminho para os dados que serão transformados 
-    dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos.csv'
-    dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados.csv'
+    dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos_3003.csv'
+    dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_finais.csv'
 
-    # Aplica a transformação
     df_transformado = processar_transformacao(dados_limpos, dados_transformados)
 
-    # Salva os dados transformados em arquivo .csv, se houver novos dados
     if not df_transformado.empty:
         print("✅ Os dados foram transformados com sucesso.")
         print("\nAmostra dos dados transformados:\n", df_transformado.head())
-
         df_transformado.to_csv(dados_transformados, index=False)
         print(f"✅ Dados transformados salvos em {dados_transformados}.")
     else:
