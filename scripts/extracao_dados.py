@@ -7,7 +7,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-def extrair_dados(ticker, intervalo, dias, dados_brutos):
+def extrair_dados(ticker,  dias, intervalo, dados_brutos):
     """Extrai e organiza dados do Yahoo Finance no intervalo correto."""
     
     df_total = pd.DataFrame()  # DataFrame para armazenar os dados
