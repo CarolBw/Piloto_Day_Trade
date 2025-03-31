@@ -1,4 +1,6 @@
 
+# modelagem_dados_XGboot.py
+
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -9,7 +11,7 @@ import os
 # Carregar dados
 df = pd.read_csv('/content/Piloto_Day_Trade/data/dados_transformados_finais.csv', parse_dates=['data'])
 df = df[['data', 'hora', 'abertura', 'minimo', 'maximo', 'fechamento',
-        'volume', 'volatilidade', 'mes', 'dia_da_semana', 'hora_num', 'minuto', 'mercado_aberto', 'retorno']]
+        'volume', 'volatilidade', 'dia_da_semana', 'hora_num', 'minuto', 'mercado_aberto', 'retorno', 'SMA_10', 'retorno_lag1', 'EMA_10', 'OBV', 'rsi', 'Signal_Line', 'std_dev' ]]
 
 # Filtrar os dados para considerar apenas os últimos 10 dias úteis
 df = df.sort_values(by=['data', 'hora'], ascending=True)
@@ -25,7 +27,7 @@ df.dropna(inplace=True)  # Remover valores nulos
 
 # Definir features e targets
 features = ['abertura', 'minimo', 'maximo', 'fechamento',
-            'volume', 'volatilidade', 'mes', 'dia_da_semana', 'hora_num', 'minuto', 'mercado_aberto', 'retorno']
+            'volume', 'volatilidade', 'dia_da_semana', 'hora_num', 'minuto', 'mercado_aberto', 'retorno', 'SMA_10', 'retorno_lag1', 'EMA_10', 'OBV', 'rsi', 'Signal_Line','std_dev' ]
 X = df[features]
 
 targets = ['target_abertura', 'target_min', 'target_max', 'target_fechamento']
@@ -83,3 +85,4 @@ for target in targets:
         print(f"✅ Modelo XGBoost para {target} salvo com sucesso!")
     else:
         print(f"❌ Erro ao treinar modelo para {target}. Modelo não foi salvo.")
+
