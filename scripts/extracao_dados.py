@@ -11,8 +11,8 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
     """Extrai e organiza dados do Yahoo Finance no intervalo correto."""
     
     df_total = pd.DataFrame()  # DataFrame para armazenar os dados
-    data_inicio = datetime.now() - timedelta(days=dias)  # Data inicial
-    data_fim = datetime.now()  # Data final
+    data_inicio = datetime.today() - timedelta(days=dias)  # Data inicial
+    data_fim = datetime.today() + timedelta(days=1)
 
     # Verifica se o arquivo de dados brutos existe
     if os.path.exists(dados_brutos):
@@ -21,7 +21,7 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
         if not df.empty:
             # Atualiza a data de início para a última data disponível nos dados brutos
             ultima_data = pd.to_datetime(df.index.max())
-            data_inicio = ultima_data + timedelta(minutes=5)
+            data_inicio = ultima_data + timedelta(minutes=30)
 
     print(f"🔄 Extraindo dados de {data_inicio.strftime('%Y-%m-%d %H:%M:%S')} até {data_fim.strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     ticker = "BBDC4.SA"  # Ticker da ação
     intervalo = "5m"  # Intervalo de tempo (5 minutos)
     dias = 45  # Número de dias a partir de hoje para buscar os dados
-    dados_brutos = "/content/Piloto_Day_Trade/data/dados_brutos_recentes.csv"  # Caminho do arquivo de dados brutos
+    dados_brutos = "/content/Piloto_Day_Trade/data/dados_brutos_3103.csv"  # Caminho do arquivo de dados brutos
     df = extrair_dados(ticker, dias, intervalo, dados_brutos)

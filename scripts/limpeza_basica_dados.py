@@ -33,7 +33,7 @@ def limpeza_basica_dados(df):
     df = df.reset_index()
 
     # Verificar após a transformação do índice
-    print("Após conversão de índice:")
+    print("\nApós conversão de índice:")
     print(df.head())
 
     # Remover o horário da coluna 'data', mantendo apenas a data
@@ -62,7 +62,7 @@ def limpeza_basica_dados(df):
     df = df[['data', 'hora', 'abertura', 'minimo', 'maximo', 'fechamento', 'volume']]
 
     # Verificar após reorganizar as colunas
-    print("Após reorganizar as colunas:")
+    print("\nApós reorganizar as colunas:")
     print(df.head())
 
     # Verificar e remover duplicatas mantendo a primeira ocorrência
@@ -72,7 +72,7 @@ def limpeza_basica_dados(df):
     df = df.dropna(thresh=df.shape[1] * 0.5)
 
     # Verificar após remoção de duplicatas e nulos
-    print("Após remover duplicatas e nulos:")
+    print("\nApós remover duplicatas e nulos:")
     print(df.head())
 
     # Garantir que 'data' e 'hora' estejam no formato datetime
@@ -83,26 +83,26 @@ def limpeza_basica_dados(df):
     df = df[df['data'].dt.weekday < 5]
 
     # Verificar após filtrar dias úteis
-    print("Após filtrar apenas os dias úteis:")
+    print("\nApós filtrar apenas os dias úteis:")
     print(df.head())
 
     # Filtra apenas horários entre 09:55 e 18:05
     df = df[(df['hora'] >= pd.to_datetime('09:55:00').time()) & 
             (df['hora'] <= pd.to_datetime('18:05:00').time())]
-
+    
     # Verificar após filtrar o intervalo de horário
-    print("Após filtrar o intervalo de horário (09:55-18:05):")
+    print("\nApós filtrar o intervalo de horário (09:55-18:05):")
     print(df.head())
 
     # Caso o DataFrame fique vazio, informar o motivo
     if df.empty:
         print("O DataFrame ficou vazio após o filtro de horário. Verifique se os dados estão dentro do intervalo de 09:55-18:05.")
     else:
-        print("Limpeza de dados concluída com sucesso.")
+        print("\nLimpeza de dados concluída com sucesso.")
 
-        # Ordenar os dados
-    df = df.sort_values(["data", "hora"], ascending=[False, True])
-    print("Dados limpos e ordenados\n:")
+    # Ordenar os dados
+    df = df.sort_values(["data", "hora"], ascending=[False, True])    
+    print("\nDados limpos e ordenados:")
     print(df.head(10))
 
     return df
@@ -110,10 +110,10 @@ def limpeza_basica_dados(df):
 
 if __name__ == "__main__": 
     # Ler os dados brutos    
-    df = pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos_recentes.csv", index_col=0, parse_dates=True, dayfirst=True)
+    dados_brutos= pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos_3103.csv", index_col=0, parse_dates=True, dayfirst=True)
     # Aplicar limpeza nos dados
-    df_limpo = limpeza_basica_dados(df)
+    df_limpo = limpeza_basica_dados(dados_brutos)
     # Salva os dados limpos em CSV    
-    df.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos_recentes.csv", index=False)
-    print(f"Dados limpos salvos em data/dados_limpos_recentes.csv")
+    df_limpo.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos_3103.csv", index=False)
+    print(f"\nOs dados foram limpos e salvos em csv.")
 

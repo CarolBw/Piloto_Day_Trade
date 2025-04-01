@@ -58,6 +58,7 @@ def calcular_indicadores(df):
     scaler = MinMaxScaler()
     df[['fechamento_normalizado', 'volume_normalizado']] = scaler.fit_transform(df[['fechamento', 'volume']])
     
+    df = df.sort_values['data', 'hora'], ascending=[False, True]
     df.dropna(inplace=True)
     return df
 
