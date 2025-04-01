@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from dotenv import load_dotenv
 
+
 # Carregar variáveis de ambiente
 load_dotenv()
 
@@ -102,11 +103,48 @@ def calcular_indicadores(df):
     print(f"✅ Indicadores calculados. Tamanho final do DataFrame: {len(df)} linhas.")
     return df
 
+def adicionar_features_temporais(df):
+    """Adiciona colunas temporais para análise de séries temporais."""
+    
+    if df.empty:
+        print("⚠️ Nenhum dado disponível para processamento.")
+        return df
+    
+    # Converter 'data' para datetime se necessário
+    df['data'] = pd.to_datetime(df['data'], errors='coerce')
+    
+    # Criar coluna do dia da semana para entrada e previsão
+    df['dia_da_semana_entrada'] = df['data'].dt.weekday  # 0 = Segunda, 6 = Domingo
+    df['data_previsao'] = df['data'] + pd.DateOffset(days=1)
+    df['dia_da_semana_previsao'] = df['data_previsao'].dt.weekday
+    
+    # Ajustar casos de sexta-feira para segunda-feira
+    df.loc[df['dia_da_semana_entrada'] == 4, 'data_previsao'] += pd.DateOffset(days=2)
+    df['dia_da_semana_previsao'] = df['data_previsao'].dt.weekday
+    
+    # Verificar se 'hora' está presente e converter corretamente
+    if 'hora' in df.columns:
+        df['hora'] = pd.to_datetime(df['hora'].astype(str), format='%H:%M:%S', errors='coerce').dt.time
+        
+        # Criar colunas de hora e minuto
+        df['hora_num'] = df['hora'].apply(lambda x: x.hour if pd.notnull(x) else np.nan)
+        df['minuto'] = df['hora'].apply(lambda x: x.minute if pd.notnull(x) else np.nan)
+        
+        # Criar coluna indicando se o mercado está aberto (entre 10h e 17h)
+        df['mercado_aberto'] = ((df['hora_num'] >= 10) & (df['hora_num'] <= 17)).astype(int)
+    else:
+        df['hora_num'] = np.nan
+        df['minuto'] = np.nan
+        df['mercado_aberto'] = 0
+    
+    return df
+
 def processar_transformacao(dados_limpos, dados_transformados):
     """Executa o processo de transformação dos dados."""
     
     df_transformado = carregar_dados(dados_transformados)
     df_limpo = carregar_dados(dados_limpos)
+    
     
     if df_transformado.empty:
         print("📂 Nenhum dado transformado encontrado. Criando novo DataFrame.")
@@ -116,6 +154,7 @@ def processar_transformacao(dados_limpos, dados_transformados):
     
     if not novos_dados.empty:
         novos_dados = calcular_indicadores(novos_dados)
+        novos_dados = adicionar_features_temporais(novos_dados)
         df_final = pd.concat([df_transformado, novos_dados], ignore_index=True) if not df_transformado.empty else novos_dados
         
         pasta = os.path.dirname(dados_transformados)
@@ -135,6 +174,7 @@ if __name__ == "__main__":
     dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_3103.csv'
     
     df_transformado = processar_transformacao(dados_limpos, dados_transformados)
+    print(df_transformado.head(10))
     
     if df_transformado.empty:
         print("⚠️ Nenhum dado transformado para salvar.")
