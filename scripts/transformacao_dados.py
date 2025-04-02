@@ -2,9 +2,7 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from dotenv import load_dotenv
-
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -89,10 +87,6 @@ def calcular_indicadores(df):
         df[f'fechamento_lag{lag}'] = df['fechamento'].shift(lag)
         df[f'retorno_lag{lag}'] = df['retorno'].shift(lag)
         df[f'volume_lag{lag}'] = df['volume'].shift(lag)
-
-    # Normalização
-    scaler = MinMaxScaler()
-    df[['fechamento_normalizado', 'volume_normalizado']] = scaler.fit_transform(df[['fechamento', 'volume']])
 
     # Substituir NaN por zero onde necessário
     df.fillna(0, inplace=True)
