@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-def limpeza_basica_dados(df):
+def limpeza_dados(df):
     # Verificar se os dados estão corretos
     print("Dados originais:")
     print(df.head())  
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # Ler os dados brutos    
     dados_brutos= pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos_3103.csv", index_col=0, parse_dates=True, dayfirst=True)
     # Aplicar limpeza nos dados
-    df_limpo = limpeza_basica_dados(dados_brutos)
+    df_limpo = limpeza_dados(dados_brutos)
     # Salva os dados limpos em CSV    
     df_limpo.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos_3103.csv", index=False)
     print(f"\nOs dados foram limpos e salvos em csv.")
