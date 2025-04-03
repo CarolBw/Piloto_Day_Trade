@@ -51,19 +51,20 @@ def normalizar_dados(arquivo):
     # Converter datas para formato adequado
     df['data_previsao'] = pd.to_datetime(df['data_previsao'])
     df['data'] = pd.to_datetime(df['data'])
-    
+
+    if not df_normalizado.empty:
+        num_dias = df_normalizado['data'].nunique()
+        print(f"O conjunto de dados contém {num_dias} dias únicos.\n")
+
     return df
 
 if __name__ == "__main__":    
     # Definir caminho do arquivo de entrada
-    caminho_arquivo = "/content/Piloto_Day_Trade/data/dados_transformados15.csv"
-    
+    dados_transformados= "/content/Piloto_Day_Trade/data/dados_transformados15.csv"    
     # Normalizar e padronizar os dados
-    df_normalizado = normalizar_dados(caminho_arquivo)  
-    
+    df_normalizado = normalizar_dados(dados_transformados)      
     # Salvar os dados normalizados
-    caminho_saida = "/content/Piloto_Day_Trade/data/dados_normalizados15.csv"
-    df_normalizado.to_csv(caminho_saida, index=False)    
-    
-    print(f"✅ Dataset normalizado e padronizado salvo com sucesso.")
+    dados_normalizados = "/content/Piloto_Day_Trade/data/dados_normalizados15.csv"
+    df_normalizado.to_csv(dados_normalizados, index=False)       
+    print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
     print(df_normalizado.head(5))
