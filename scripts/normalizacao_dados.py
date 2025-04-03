@@ -53,8 +53,10 @@ def normalizar_dados(arquivo):
     df['data'] = pd.to_datetime(df['data'])
 
     if not df_normalizado.empty:
-        num_dias = df_normalizado['data'].nunique()
+        num_dias = df['data'].nunique()
         print(f"O conjunto de dados contém {num_dias} dias únicos.\n")
+        print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
+        print(df.head(5))
 
     return df
 
@@ -66,5 +68,4 @@ if __name__ == "__main__":
     # Salvar os dados normalizados
     dados_normalizados = "/content/Piloto_Day_Trade/data/dados_normalizados15.csv"
     df_normalizado.to_csv(dados_normalizados, index=False)       
-    print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
-    print(df_normalizado.head(5))
+    
