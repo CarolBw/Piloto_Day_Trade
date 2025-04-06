@@ -57,9 +57,3 @@ if __name__ == "__main__":
     git_config()
 
 
-'''
-# Executar a partir de arquivo .py
-from configurar_git import git_config
-python configurar_git.py
-
-'''

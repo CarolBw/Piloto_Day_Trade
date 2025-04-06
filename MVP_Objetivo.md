@@ -26,7 +26,7 @@ Para organizar os dados e facilitar o processamento pelo modelo, será utilizado
 
 - **Tabela Bruta:** Contém os dados extraídos do Yahoo Finance, sem modificações.
 - **Tabela Transformada:** Inclui a limpeza geral,  e as novas features derivadas.
-- Tabela Normalizada: Inclui as variáveis normalizadas, padronizadas para diferentes testes na acurácia do modelo.
+- Tabela Normalizada: Inclui as variáveis normalizadas, padronizadas para diferentes testes na acurácia do modelo.
 - **Tabela Final:** Contém os dados que indicaram melhor acurácia no modelo preditivo.
 
 Será criado um **Catálogo de Dados** contendo:
