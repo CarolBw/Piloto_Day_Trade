@@ -27,46 +27,47 @@ def normalizar_dados(arquivo):
         except Exception as e:
             print(f"❌ Erro ao carregar {arquivo}: {e}")
             return pd.DataFrame()
-    
+
     if df.empty:
         print("⚠️ DataFrame vazio. Nenhuma normalização aplicada.")
         return df
-    
+
     # Inicializar scalers
     scaler_padronizacao = StandardScaler()
     scaler_normalizacao = MinMaxScaler()
-    
+
     # Colunas a serem padronizadas (média 0, desvio padrão 1)
     padronizar_cols = ['retorno', 'volatilidade', 'MACD', 'Signal_Line', 'rsi']
     df[padronizar_cols] = scaler_padronizacao.fit_transform(df[padronizar_cols])
-    
+
     # Colunas a serem normalizadas (escala entre 0 e 1)
     normalizar_cols = ['abertura', 'minimo', 'maximo', 'fechamento', 'volume', 'SMA_10', 'EMA_10', 'OBV',
                        'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
                        'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
                        'fechamento_lag3', 'retorno_lag3', 'volume_lag3']
     df[normalizar_cols] = scaler_normalizacao.fit_transform(df[normalizar_cols])
-    
+
     # Variáveis categóricas (convertidas para inteiro)
     categoricas = ['dia_da_semana_entrada', 'dia_da_semana_previsao', 'hora_num', 'minuto', 'mercado_aberto']
     df[categoricas] = df[categoricas].astype(int)
-    
+
     # Converter datas para formato adequado
     df['data_previsao'] = pd.to_datetime(df['data_previsao'])
     df['data'] = pd.to_datetime(df['data'])
+
+    # Criar pasta de scalers se não existir
+    os.makedirs("/content/Piloto_Day_Trade/scalers", exist_ok=True)
+
+    # Salvar scaler para todas as colunas normalizadas
+    joblib.dump(scaler_normalizacao, "/content/Piloto_Day_Trade/scalers/scaler_normalizacao_completo.pkl")
 
     # Salvar scaler específico para colunas de preço
     preco_cols = ['abertura', 'maximo', 'minimo', 'fechamento']
     scaler_preco = MinMaxScaler()
     scaler_preco.fit(df[preco_cols])
-
-    # Criar pasta de scalers se não existir
-    os.makedirs("/content/Piloto_Day_Trade/scalers", exist_ok=True)
     joblib.dump(scaler_preco, "/content/Piloto_Day_Trade/scalers/scaler_normalizacao_preco.pkl")
 
-
     print("💾 Scalers salvos com sucesso.")
-
     print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
     print(df.head(5))
 
