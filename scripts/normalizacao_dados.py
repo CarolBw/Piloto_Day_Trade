@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import os
+import joblib
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente
@@ -10,7 +11,8 @@ load_dotenv()
 
 def normalizar_dados(arquivo):
     """
-    Carrega os dados de um arquivo CSV, aplica normalização e padronização.
+    Carrega os dados de um arquivo CSV, aplica normalização e padronização,
+    e salva os scalers usados.
     """
     # Carregar dados
     if isinstance(arquivo, pd.DataFrame):
@@ -40,7 +42,8 @@ def normalizar_dados(arquivo):
     
     # Colunas a serem normalizadas (escala entre 0 e 1)
     normalizar_cols = ['abertura', 'minimo', 'maximo', 'fechamento', 'volume', 'SMA_10', 'EMA_10', 'OBV',
-                       'fechamento_lag1', 'retorno_lag1', 'volume_lag1', 'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
+                       'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
+                       'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
                        'fechamento_lag3', 'retorno_lag3', 'volume_lag3']
     df[normalizar_cols] = scaler_normalizacao.fit_transform(df[normalizar_cols])
     
@@ -52,20 +55,25 @@ def normalizar_dados(arquivo):
     df['data_previsao'] = pd.to_datetime(df['data_previsao'])
     df['data'] = pd.to_datetime(df['data'])
 
-    if not df_normalizado.empty:
-        num_dias = df['data'].nunique()
-        print(f"O conjunto de dados contém {num_dias} dias únicos.\n")
-        print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
-        print(df.head(5))
+    # Salvar scaler específico para colunas de preço
+    preco_cols = ['abertura', 'maximo', 'minimo', 'fechamento']
+    scaler_preco = MinMaxScaler()
+    scaler_preco.fit(df[preco_cols])
+
+    # Criar pasta de scalers se não existir
+    os.makedirs("/content/Piloto_Day_Trade/scalers", exist_ok=True)
+    joblib.dump(scaler_preco, "/content/Piloto_Day_Trade/scalers/scaler_normalizacao_preco.pkl")
+
+
+    print("💾 Scalers salvos com sucesso.")
+
+    print(f"✅ Dataset normalizado e padronizado salvo com sucesso:")
+    print(df.head(5))
 
     return df
 
 if __name__ == "__main__":    
-    # Definir caminho do arquivo de entrada
-    dados_transformados= "/content/Piloto_Day_Trade/data/dados_transformados15.csv"    
-    # Normalizar e padronizar os dados
-    df_normalizado = normalizar_dados(dados_transformados)      
-    # Salvar os dados normalizados
+    dados_transformados = "/content/Piloto_Day_Trade/data/dados_transformados15.csv"    
+    df_normalizado = normalizar_dados(dados_transformados)
     dados_normalizados = "/content/Piloto_Day_Trade/data/dados_normalizados15.csv"
-    df_normalizado.to_csv(dados_normalizados, index=False)       
-    
+    df_normalizado.to_csv(dados_normalizados, index=False)
