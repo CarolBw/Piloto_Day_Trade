@@ -64,5 +64,5 @@ if __name__ == "__main__":
     ticker = "BBDC4.SA"  # Ticker da ação
     intervalo = "5m"  # Intervalo de tempo (5 minutos)
     dias = 45  # Número de dias a partir de hoje para buscar os dados
-    dados_brutos = "/content/Piloto_Day_Trade/data/dados_brutos_3103.csv"  # Caminho do arquivo de dados brutos
+    dados_brutos = "/content/Piloto_Day_Trade/data/dados_brutos.csv"  # Caminho do arquivo de dados brutos
     df = extrair_dados(ticker, dias, intervalo, dados_brutos)

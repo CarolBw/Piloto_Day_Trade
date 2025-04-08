@@ -1,4 +1,20 @@
 
+"""
+Função de Transformação de Dados para Modelagem Preditiva
+Processa e transforma os dados para análise e previsão, gerando um conjunto 
+de características para serem utilizadas no treinamento dos modelos.
+
+Objetivos:
+- Criar um dataset com variáveis relevantes para o modelo.
+- Incluir indicadores técnicos, estatísticas de volatilidade, médias móveis e outras features.
+- Permitir a experimentação com diferentes combinações de features.
+
+Estratégia:
+- Durante os testes de parametrização e treinamento, serão geradas diferentes versões do dataset, 
+refinando a seleção de features a medida que geramos acurácia.
+
+"""
+
 import os
 import pandas as pd
 import numpy as np
@@ -133,7 +149,7 @@ def adicionar_features_temporais(df):
     
     return df
 
-def processar_transformacao(dados_limpos, dados_transformados):
+def transformar_dados(dados_limpos, dados_transformados):
     """Executa o processo de transformação dos dados."""
     
     df_transformado = carregar_dados(dados_transformados)
@@ -158,17 +174,17 @@ def processar_transformacao(dados_limpos, dados_transformados):
         
         df_final.to_csv(dados_transformados, index=False)
         print(f"✅ Dados transformados salvos em {dados_transformados} ({len(df_final)} registros)")
+        print(f"📅 Última data disponível nos dados: {df_final['data'].max()}")
+        print(f"df_final: {df_final.head(5)}")
         return df_final
     else:
         print("⏭️ Nenhum novo dado para processar.")
+        print(f"📅 Última data disponível nos dados: {df_transformado['data'].max()}")
+        print(f"df_transformado: {df_transformado.head(5)}")
         return df_transformado
 
 if __name__ == "__main__":
-    dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos_3103.csv'
-    dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_3103.csv'
-    
-    df_transformado = processar_transformacao(dados_limpos, dados_transformados)
-    print(df_transformado.head(10))
-    
-    if df_transformado.empty:
-        print("⚠️ Nenhum dado transformado para salvar.")
+    path_dados_limpos = '/content/Piloto_Day_Trade/data/dados_limpos.csv'
+    path_dados_transformados = '/content/Piloto_Day_Trade/data/dados_transformados_3103.csv'    
+    df_transformado =transformar_dados(path_dados_limpos, path_dados_transformados)
+
