@@ -88,11 +88,11 @@ def preparar_dados_lstm(
     return X_treino, X_teste, y_treino, y_teste
 
 
-# Execução direta (só ocorre ao rodar como script, não na importação)
+# Execução direta 
 if __name__ == "__main__":
     path_dados = '/content/Piloto_Day_Trade/data/dados_transformados.csv'
     X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
-        path_dados=path_dados
+        path_dados=path_dados,
         tam_seq=96,
         tx_treino=0.8
     )
