@@ -17,8 +17,7 @@ import joblib
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 def preparar_dados_lstm(
-    caminho_dados='/content/Piloto_Day_Trade/data/dados_transformados.csv',
-    caminho_scaler_preco='/content/Piloto_Day_Trade/models/scalers/scaler_normalizacao_preco.pkl',
+    caminho_dados='/content/Piloto_Day_Trade/data/dados_transformados.csv',    
     tamanho_sequencia=32,
     proporcao_treino=0.8
 ):
@@ -36,7 +35,7 @@ def preparar_dados_lstm(
     df = df.dropna(subset=preco_cols)
 
     # Criar diretório do scaler se não existir
-    os.makedirs(os.path.dirname(caminho_scaler_preco), exist_ok=True)
+    caminho_scaler_preco = os.makedirs(os.path.dirname('/content/Piloto_Day_Trade/models/scalers/scaler_normalizacao_preco.pkl',), exist_ok=True)
 
     # Salvar scaler de preço com base nos valores reais (antes da normalização)
     scaler_preco = MinMaxScaler()
