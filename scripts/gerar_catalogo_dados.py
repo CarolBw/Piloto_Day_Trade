@@ -1,102 +1,48 @@
 
-#@title Geração de Catálogo de Dados
-
 """
-Geração de Catálogo de Dados para rastreabilidade e governança no projeto Piloto_Day_Trade.
-Gera um inventário estruturado de arquivos CSV, com metainformações úteis para controle de dados.
-
-Salva o catálogo em CSV e JSON.
+Catálogo de Dados detalhado para o modelo dimensional em Esquema Estrela
+Projeto: Piloto_Day_Trade
+Formato: CSV
+Objetivo: Atender aos requisitos de documentação com descrição, domínio, tipo, fonte, técnica e status.
 """
 
-import os
 import pandas as pd
 import json
-from datetime import datetime
-import numpy as np
 
-def gerar_catalogo(path_dados, path_saida_csv, path_saida_json):
-    catalogo = []
+# Lista detalhada das variáveis do modelo estrela
+catalogo = [
+    # Tabela Fato
+    {"tabela": "fato_precos", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira que referencia a dimensão de tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "chave relacional", "status": "ativo"},
+    {"tabela": "fato_precos", "variavel": "preco_fechamento", "tipo": "float", "descricao": "Preço de fechamento do ativo no intervalo de 15 minutos", "dominio": "valores reais positivos", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
 
-    # Anotações por arquivo
-    anotacoes = {
-        "dados_brutos.csv": {
-            "descricao": "Extraídos do Yahoo Finance via yfinance. Dados originais, sem tratamento ou modificações.",
-            "fonte": "yfinance",
-            "responsavel": "Carolina B.",
-            "status": "ativo"
-        },
-        "dados_limpos.csv": {
-            "descricao": "Aplicada limpeza básica: tratamento de datas, remoção de nulos, padronização de colunas. Sem transformação de variáveis.",
-            "fonte": "dados_brutos.csv",
-            "responsavel": "Carolina B.",
-            "status": "ativo"
-        },
-        "dados_transformados.csv": {
-            "descricao": "Transformações aplicadas: criação de novas features com indicadores técnicos para análise preditiva. Sem normalização.",
-            "fonte": "dados_limpos.csv",
-            "responsavel": "Carolina B.",
-            "status": "ativo"
-        }
-    }
+    # Dimensão Tempo
+    {"tabela": "dim_tempo", "variavel": "id_tempo", "tipo": "int", "descricao": "Identificador único da dimensão tempo", "dominio": "inteiros positivos", "fonte": "gerado", "tecnica": "indexação temporal", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "data", "tipo": "date", "descricao": "Data da observação (YYYY-MM-DD)", "dominio": "datas no intervalo do dataset", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "hora", "tipo": "string", "descricao": "Hora da observação (HH:MM)", "dominio": "intervalos de 15 minutos", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "dia_da_semana", "tipo": "int", "descricao": "Dia da semana (0=Segunda a 6=Domingo)", "dominio": "0 a 6", "fonte": "dados_transformados.csv", "tecnica": "mapeamento de data", "status": "ativo"},
 
-    for caminho in path_dados:
-        if not os.path.exists(caminho):
-            print(f"⚠️ Arquivo não encontrado: {caminho}")
-            continue
+    # Dimensão Indicadores Técnicos
+    {"tabela": "dim_indicadores", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira para a dimensão tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "relacional", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "SMA_10", "tipo": "float", "descricao": "Média Móvel Simples de 10 períodos", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "rolling mean", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "EMA_10", "tipo": "float", "descricao": "Média Móvel Exponencial de 10 períodos", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "exponential moving average", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "MACD", "tipo": "float", "descricao": "Indicador MACD (convergência/divergência de médias)", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "diferença entre médias exponenciais", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "Signal_Line", "tipo": "float", "descricao": "Linha de sinal do MACD", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "média do MACD", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "RSI", "tipo": "float", "descricao": "Índice de Força Relativa", "dominio": "0 a 100", "fonte": "dados_transformados.csv", "tecnica": "indicador técnico clássico", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "OBV", "tipo": "float", "descricao": "On Balance Volume (volume cumulativo)", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "cálculo cumulativo", "status": "ativo"},
 
-        try:
-            df = pd.read_csv(caminho)
-            nome_arquivo = os.path.basename(caminho)
-            stat = os.stat(caminho)
+    # Dimensão Lags
+    {"tabela": "dim_lags", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira para a dimensão tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "relacional", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "fechamento_lag1", "tipo": "float", "descricao": "Preço de fechamento do candle anterior", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "shift(-1)", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "retorno_lag1", "tipo": "float", "descricao": "Retorno percentual do candle anterior", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "cálculo percentual", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "volume_lag1", "tipo": "float", "descricao": "Volume negociado no candle anterior", "dominio": "valores reais positivos", "fonte": "dados_transformados.csv", "tecnica": "shift(-1)", "status": "ativo"}
+]
 
-            tipos_colunas = df.dtypes.astype(str).to_dict()
-            dominios_colunas = {}
+# Salvar como CSV
+df = pd.DataFrame(catalogo)
+df.to_csv("/content/Piloto_Day_Trade/modelagem/catalog/catalogo_dados.csv", index=False)
+print("✅ Catálogo CSV salvo.")
 
-            for col in df.columns:
-                if df[col].dtype in [np.float64, np.int64]:
-                    dominios_colunas[col] = {
-                        "min": float(df[col].min()),
-                        "max": float(df[col].max()),
-                        "media": float(df[col].mean()),
-                        "desvio_padrao": float(df[col].std())
-                    }
-                elif df[col].dtype == object:
-                    dominios_colunas[col] = {
-                        "categorias_unicas": df[col].dropna().unique().tolist()
-                    }
-
-            anot = anotacoes.get(nome_arquivo, {})
-
-            entry = {
-                "arquivo": nome_arquivo,
-                "caminho": caminho,
-                "linhas": int(len(df)),
-                "colunas": int(len(df.columns)),
-                "nomes_colunas": df.columns.tolist(),
-                "tipos_colunas": tipos_colunas,
-                "dominios_colunas": dominios_colunas,
-                "data_min": str(df['data'].min()) if 'data' in df.columns else None,
-                "data_max": str(df['data'].max()) if 'data' in df.columns else None,
-                "tamanho_em_bytes": int(stat.st_size),
-                "ultima_modificacao": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                "descricao": anot.get("descricao", ""),
-                "fonte": anot.get("fonte", ""),
-                "responsavel": anot.get("responsavel", ""),
-                "status": anot.get("status", "ativo")
-            }
-            catalogo.append(entry)
-        except Exception as e:
-            print(f"❌ Erro ao processar {caminho}: {e}")
-
-    df_catalogo = pd.DataFrame(catalogo)
-
-    # Salvar CSV
-    df_catalogo.to_csv(path_saida_csv, index=False)
-    print(f"✅ Catálogo salvo em: {path_saida_csv}")
-
-    # Salvar JSON
-    with open(path_saida_json, 'w') as f:
-        json.dump(catalogo, f, indent=4, ensure_ascii=False)
-    print(f"✅ Catálogo JSON salvo em: {path_saida_json}")
-
-    return df_catalogo
+# Salvar como JSON
+with open("/content/Piloto_Day_Trade/modelagem/catalog/catalogo_dados.json", "w") as f:
+    json.dump(catalogo, f, indent=4, ensure_ascii=False)
+print("✅ Catálogo JSON salvo.")

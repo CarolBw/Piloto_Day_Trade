@@ -1,0 +1,18 @@
+tabela,variavel,tipo,descricao,dominio,fonte,tecnica,status
+fato_precos,id_tempo,int,Chave estrangeira que referencia a dimensão de tempo,inteiros positivos,dim_tempo,chave relacional,ativo
+fato_precos,preco_fechamento,float,Preço de fechamento do ativo no intervalo de 15 minutos,valores reais positivos,dados_transformados.csv,extração direta,ativo
+dim_tempo,id_tempo,int,Identificador único da dimensão tempo,inteiros positivos,gerado,indexação temporal,ativo
+dim_tempo,data,date,Data da observação (YYYY-MM-DD),datas no intervalo do dataset,dados_transformados.csv,extração direta,ativo
+dim_tempo,hora,string,Hora da observação (HH:MM),intervalos de 15 minutos,dados_transformados.csv,extração direta,ativo
+dim_tempo,dia_da_semana,int,Dia da semana (0=Segunda a 6=Domingo),0 a 6,dados_transformados.csv,mapeamento de data,ativo
+dim_indicadores,id_tempo,int,Chave estrangeira para a dimensão tempo,inteiros positivos,dim_tempo,relacional,ativo
+dim_indicadores,SMA_10,float,Média Móvel Simples de 10 períodos,valores reais,dados_transformados.csv,rolling mean,ativo
+dim_indicadores,EMA_10,float,Média Móvel Exponencial de 10 períodos,valores reais,dados_transformados.csv,exponential moving average,ativo
+dim_indicadores,MACD,float,Indicador MACD (convergência/divergência de médias),valores reais,dados_transformados.csv,diferença entre médias exponenciais,ativo
+dim_indicadores,Signal_Line,float,Linha de sinal do MACD,valores reais,dados_transformados.csv,média do MACD,ativo
+dim_indicadores,RSI,float,Índice de Força Relativa,0 a 100,dados_transformados.csv,indicador técnico clássico,ativo
+dim_indicadores,OBV,float,On Balance Volume (volume cumulativo),valores reais,dados_transformados.csv,cálculo cumulativo,ativo
+dim_lags,id_tempo,int,Chave estrangeira para a dimensão tempo,inteiros positivos,dim_tempo,relacional,ativo
+dim_lags,fechamento_lag1,float,Preço de fechamento do candle anterior,valores reais,dados_transformados.csv,shift(-1),ativo
+dim_lags,retorno_lag1,float,Retorno percentual do candle anterior,valores reais,dados_transformados.csv,cálculo percentual,ativo
+dim_lags,volume_lag1,float,Volume negociado no candle anterior,valores reais positivos,dados_transformados.csv,shift(-1),ativo
