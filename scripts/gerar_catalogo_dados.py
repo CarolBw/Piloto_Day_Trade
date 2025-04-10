@@ -14,7 +14,7 @@ import json
 from datetime import datetime
 import numpy as np
 
-def gerar_catalogo(caminhos_csv, caminho_saida_csv, caminho_saida_json):
+def gerar_catalogo(path_dados, path_saida_csv, path_saida_json):
     catalogo = []
 
     # Anotações por arquivo
@@ -39,7 +39,7 @@ def gerar_catalogo(caminhos_csv, caminho_saida_csv, caminho_saida_json):
         }
     }
 
-    for caminho in caminhos_csv:
+    for caminho in path_dados:
         if not os.path.exists(caminho):
             print(f"⚠️ Arquivo não encontrado: {caminho}")
             continue
@@ -91,12 +91,12 @@ def gerar_catalogo(caminhos_csv, caminho_saida_csv, caminho_saida_json):
     df_catalogo = pd.DataFrame(catalogo)
 
     # Salvar CSV
-    df_catalogo.to_csv(caminho_saida_csv, index=False)
-    print(f"✅ Catálogo salvo em: {caminho_saida_csv}")
+    df_catalogo.to_csv(path_saida_csv, index=False)
+    print(f"✅ Catálogo salvo em: {path_saida_csv}")
 
     # Salvar JSON
-    with open(caminho_saida_json, 'w') as f:
+    with open(path_saida_json, 'w') as f:
         json.dump(catalogo, f, indent=4, ensure_ascii=False)
-    print(f"✅ Catálogo JSON salvo em: {caminho_saida_json}")
+    print(f"✅ Catálogo JSON salvo em: {path_saida_json}")
 
     return df_catalogo
