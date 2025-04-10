@@ -6,7 +6,7 @@ load_dotenv(dotenv_path='/content/.env')
 
 def git_config():
     """Configura o Git localmente e sincroniza com o repositório remoto no GitHub."""
-    
+
     # Carregar variáveis de ambiente do arquivo .env
     load_dotenv(dotenv_path='/content/.env')
 
