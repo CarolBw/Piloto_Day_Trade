@@ -1,0 +1,40 @@
+
+"""
+Catálogo de Dados detalhado para o modelo dimensional em Esquema Estrela
+Projeto: Piloto_Day_Trade
+Formato: CSV
+Objetivo: Atender aos requisitos de documentação com descrição, domínio, tipo, fonte, técnica e status.
+"""
+
+import pandas as pd
+import json
+
+# Lista detalhada das variáveis do modelo estrela
+catalogo = [
+    # Tabela Fato
+    {"tabela": "fato_precos", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira que referencia a dimensão de tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "chave relacional", "status": "ativo"},
+    {"tabela": "fato_precos", "variavel": "preco_fechamento", "tipo": "float", "descricao": "Preço de fechamento do ativo no intervalo de 15 minutos", "dominio": "0.0 a valores máximos de mercado", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
+
+    # Tabela Dimensão Tempo
+    {"tabela": "dim_tempo", "variavel": "id_tempo", "tipo": "int", "descricao": "Identificador único da dimensão tempo", "dominio": "inteiros positivos", "fonte": "gerado", "tecnica": "indexação temporal", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "data", "tipo": "date", "descricao": "Data da observação", "dominio": "2025-02-24 a 2025-04-08", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "hora", "tipo": "string", "descricao": "Hora da observação no formato HH:MM", "dominio": "intervalos de 15 minutos", "fonte": "dados_transformados.csv", "tecnica": "extração direta", "status": "ativo"},
+    {"tabela": "dim_tempo", "variavel": "dia_da_semana_entrada", "tipo": "int", "descricao": "Dia da semana da observação (0=Segunda, 6=Domingo)", "dominio": "0 a 6", "fonte": "dados_transformados.csv", "tecnica": "mapeamento de data", "status": "ativo"},
+
+    # Tabela Dimensão Indicadores Técnicos
+    {"tabela": "dim_indicadores", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira para a dimensão tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "relacional", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "SMA_10", "tipo": "float", "descricao": "Média Móvel Simples de 10 períodos", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "rolling mean", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "EMA_10", "tipo": "float", "descricao": "Média Móvel Exponencial de 10 períodos", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "exponential moving average", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "MACD", "tipo": "float", "descricao": "Moving Average Convergence Divergence", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "diferença entre médias exponenciais", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "Signal_Line", "tipo": "float", "descricao": "Linha de sinal do MACD", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "média do MACD", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "rsi", "tipo": "float", "descricao": "Índice de Força Relativa", "dominio": "0 a 100", "fonte": "dados_transformados.csv", "tecnica": "indicador técnico clássico", "status": "ativo"},
+    {"tabela": "dim_indicadores", "variavel": "OBV", "tipo": "float", "descricao": "On Balance Volume, indicador de volume associado ao preço", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "cálculo cumulativo", "status": "ativo"},
+
+    # Tabela Dimensão Lags
+    {"tabela": "dim_lags", "variavel": "id_tempo", "tipo": "int", "descricao": "Chave estrangeira para a dimensão tempo", "dominio": "inteiros positivos", "fonte": "dim_tempo", "tecnica": "relacional", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "fechamento_lag1", "tipo": "float", "descricao": "Fechamento do candle anterior (1 lag)", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "shift(-1)", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "retorno_lag1", "tipo": "float", "descricao": "Retorno do candle anterior", "dominio": "valores reais", "fonte": "dados_transformados.csv", "tecnica": "cálculo percentual", "status": "ativo"},
+    {"tabela": "dim_lags", "variavel": "volume_lag1", "tipo": "float", "descricao": "Volume negociado no candle anterior", "dominio": "valores positivos", "fonte": "dados_transformados.csv", "tecnica": "shift(-1)", "status": "ativo"}
+]
+
+
