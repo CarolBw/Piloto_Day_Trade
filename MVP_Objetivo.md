@@ -4,7 +4,7 @@
 
 ### 1. Propósito do MVP
 
-Este projeto tem como objetivo principal a criação de um pipeline para extração, transformação, carga, análise e previsão da movimentação intradiária dos preços de um ativo financeiro em intervalos de 15 minutos. O modelo preditivo central será baseado em redes neurais recorrentes (LSTM), mas outras abordagens serão exploradas. O MVP visa garantir previsões  para embasar decisões estratégicas de day trade.
+Este projeto tem como objetivo principal a criação de um pipeline para extração, transformação, carga, análise e previsão da movimentação intradiária dos preços de um ativo financeiro em intervalos de 5 minutos. O modelo preditivo central será baseado em redes neurais recorrentes (LSTM), mas outras abordagens serão exploradas. O MVP visa garantir previsões  para embasar decisões estratégicas de day trade.
 
 ### 2. Problema a Ser Resolvido
 
