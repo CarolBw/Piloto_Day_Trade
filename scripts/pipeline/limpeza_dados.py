@@ -106,7 +106,7 @@ def limpeza_dados(df):
     print(df.head(10))
 
     # Salva os dados limpos em CSV
-    df.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos.csv", index=False)
+    df.to_csv(f"/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv", index=False)
     print(f"\nOs dados foram limpos e salvos em csv.")
 
     return df
