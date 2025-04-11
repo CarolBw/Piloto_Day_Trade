@@ -68,6 +68,13 @@ def preparar_dados_lstm(
 
     # Manter apenas colunas numéricas
     df = df.select_dtypes(include=['number'])
+    df = df.dropna()   
+
+    # Salvar versao dados preparados
+    caminho_csv_preparado = '/content/Piloto_Day_Trade/data/transformed/dados_preparados_para_modelagem.csv'
+    df.to_csv(caminho_csv_preparado, index=False)
+    print(f"✅ Dados preparados salvos em: {caminho_csv_preparado}")
+
 
     # Função para criar sequências
     def criar_sequencias(dados, tam_seq):
@@ -88,7 +95,7 @@ def preparar_dados_lstm(
     return X_treino, X_teste, y_treino, y_teste
 
 
-# Execução direta 
+# Execução direta
 if __name__ == "__main__":
     path_dados = '/content/Piloto_Day_Trade/data/dados_transformados.csv'
     X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
