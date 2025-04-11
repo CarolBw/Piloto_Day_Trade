@@ -4,8 +4,8 @@ import pandas as pd
 def limpeza_dados(df):
     # Verificar se os dados estão corretos
     print("Dados originais:")
-    print(df.head())  
-    print(df.info())  
+    print(df.head())
+    print(df.info())
 
     # Remover as primeiras duas linhas (com 'Ticker' e 'Datetime')
     df = df.iloc[2:].copy()
@@ -87,9 +87,9 @@ def limpeza_dados(df):
     print(df.head())
 
     # Filtra apenas horários entre 09:55 e 18:05
-    df = df[(df['hora'] >= pd.to_datetime('09:55:00').time()) & 
+    df = df[(df['hora'] >= pd.to_datetime('09:55:00').time()) &
             (df['hora'] <= pd.to_datetime('18:05:00').time())]
-    
+
     # Verificar após filtrar o intervalo de horário
     print("\nApós filtrar o intervalo de horário (09:55-18:05):")
     print(df.head())
@@ -101,19 +101,19 @@ def limpeza_dados(df):
         print("\nLimpeza de dados concluída com sucesso.")
 
     # Ordenar os dados
-    df = df.sort_values(["data", "hora"], ascending=[False, True])    
+    df = df.sort_values(["data", "hora"], ascending=[False, True])
     print("\nDados limpos e ordenados:")
     print(df.head(10))
 
-    # Salva os dados limpos em CSV    
+    # Salva os dados limpos em CSV
     df.to_csv(f"/content/Piloto_Day_Trade/data/dados_limpos.csv", index=False)
     print(f"\nOs dados foram limpos e salvos em csv.")
 
     return df
 
 
-if __name__ == "__main__": 
-    # Ler os dados brutos    
+if __name__ == "__main__":
+    # Ler os dados brutos
     dados_brutos = pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos.csv", index_col=0, parse_dates=True, dayfirst=True)
     # Aplicar limpeza nos dados
     df_limpo = limpeza_dados(dados_brutos)

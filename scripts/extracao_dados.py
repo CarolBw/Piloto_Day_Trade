@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 
 def extrair_dados(ticker, dias, intervalo, dados_brutos):
     """Extrai e organiza dados do Yahoo Finance no intervalo correto."""
-    
+
     df_total = pd.DataFrame()  # DataFrame para armazenar os dados
     data_inicio = datetime.today() - timedelta(days=dias)  # Data inicial
     data_fim = datetime.today() + timedelta(days=1)
@@ -17,7 +17,7 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
     # Verifica se o arquivo de dados brutos existe
     if os.path.exists(dados_brutos):
         df = pd.read_csv(dados_brutos, index_col=0, parse_dates=True)
-        
+
         if not df.empty:
             # Atualiza a data de início para a última data disponível nos dados brutos
             ultima_data = pd.to_datetime(df.index.max())
@@ -27,10 +27,10 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
 
     # Extrai os dados do Yahoo Finance
     df_novo = yf.download(
-        ticker, 
-        start=data_inicio.strftime("%Y-%m-%d"), 
-        end=data_fim.strftime("%Y-%m-%d"), 
-        interval=intervalo, 
+        ticker,
+        start=data_inicio.strftime("%Y-%m-%d"),
+        end=data_fim.strftime("%Y-%m-%d"),
+        interval=intervalo,
         progress=True
     )
 
