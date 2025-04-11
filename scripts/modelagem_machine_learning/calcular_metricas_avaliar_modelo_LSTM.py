@@ -1,44 +1,29 @@
 
-#@title Calcular métricas e avaliar modelo LSTM
-
 import pandas as pd
 import numpy as np
 import joblib
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-def avaliar_modelo_lstm(modelo, X_teste, y_teste, caminho_scaler='/content/Piloto_Day_Trade/models/scalers/scaler_normalizacao_preco.pkl'):
+def avaliar_modelo_lstm(modelo, X_teste, y_teste, caminho_scaler='/content/Piloto_Day_Trade/models/LSTM/scalers/scaler_normalizacao_preco.pkl'):
     """
     Avalia um modelo LSTM fornecido, imprimindo as principais métricas e comparação entre previsões e valores reais.
-
-    Parâmetros:
-        modelo: modelo LSTM treinado
-        X_teste: dados de entrada de teste
-        y_teste: dados reais (targets) correspondentes ao teste
-        caminho_scaler: caminho do scaler salvo para inversão da normalização
     """
-
-    # Fazer previsões
+    print("🔍 Realizando previsões...")
     y_previsto = modelo.predict(X_teste)
 
-    # Carregar o scaler de preços
+    print("📦 Carregando scaler de preços para inversão...")
     scaler_precos = joblib.load(caminho_scaler)
-
-    # Colunas de preço
     colunas_precos = ['abertura', 'maximo', 'minimo', 'fechamento']
 
-    # Redimensionar para (amostras, 4)
     y_previsto_reshape = y_previsto.reshape(-1, 4)
     y_teste_reshape = y_teste.reshape(-1, 4)
 
-    # Inverter normalização
     y_previsto_original = scaler_precos.inverse_transform(y_previsto_reshape)
     y_teste_original = scaler_precos.inverse_transform(y_teste_reshape)
 
-    # DataFrames nomeados
     df_previsto = pd.DataFrame(y_previsto_original, columns=colunas_precos)
     df_real = pd.DataFrame(y_teste_original, columns=colunas_precos)
 
-    # Comparação
     comparacao = pd.DataFrame({
         'Abertura_Real': df_real['abertura'],
         'Abertura_Prevista': df_previsto['abertura'],
@@ -53,7 +38,6 @@ def avaliar_modelo_lstm(modelo, X_teste, y_teste, caminho_scaler='/content/Pilot
     print("\n📊 Comparação de previsões (valores reais):")
     print(comparacao.head(10))
 
-    # Função auxiliar para métricas
     def calcular_metricas(y_real, y_previsto, nome):
         mae = mean_absolute_error(y_real, y_previsto)
         mse = mean_squared_error(y_real, y_previsto)
@@ -70,15 +54,23 @@ def avaliar_modelo_lstm(modelo, X_teste, y_teste, caminho_scaler='/content/Pilot
 
 
 if __name__ == "__main__":
-    # Carregar o modelo treinado
+    print("📥 Importando scripts de modelo e dados...")
     from tensorflow.keras.models import load_model
-    LSTM_model = load_model('/content/Piloto_Day_Trade/models/LSTM_v1')
+    from scripts.modelagem_machine_learning.preparar_dados_modelagem_LSTM import preparar_dados_lstm
 
-    # Avaliar o modelo
+    print("📊 Preparando dados para avaliação...")
+    X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
+        path_dados='/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv',
+        tam_seq=96,
+        tx_treino=0.8
+    )
+
+    print("📡 Carregando modelo salvo...")
+    modelo_lstm_v1 = load_model('/content/Piloto_Day_Trade/models/LSTM/modelo_LSTM_v1.keras')
+
+    print("✅ Avaliando modelo...")
     df_real, df_previsto, comparacao = avaliar_modelo_lstm(
-        modelo=LSTM_model,
+        modelo=modelo_lstm_v1,
         X_teste=X_teste,
         y_teste=y_teste
     )
-
-
