@@ -1,6 +1,6 @@
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
 
 def LSTM_model(input_shape, 
                lstm_units=64, 
@@ -11,9 +11,11 @@ def LSTM_model(input_shape,
     Cria e retorna um modelo LSTM sequencial com parâmetros ajustáveis.
     """
     model = Sequential()
-    model.add(LSTM(lstm_units, input_shape=input_shape))
+    model.add(Input(shape=input_shape))
+    model.add(LSTM(lstm_units))
     model.add(Dropout(dropout_rate))
     model.add(Dense(1))
 
     model.compile(loss=loss, optimizer=optimizer)
     return model
+
