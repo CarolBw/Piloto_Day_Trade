@@ -76,13 +76,15 @@ def preparar_dados_lstm(
     print(f"✅ Dados preparados salvos em: {caminho_csv_preparado}")
 
 
-    # Função para criar sequências
-    def criar_sequencias(dados, tam_seq):
-        entradas, saidas = [], []
-        for i in range(len(dados) - tam_seq - 1):
-            entradas.append(dados.iloc[i:i+tam_seq].values)
-            saidas.append(dados.iloc[i+1:i+1+tam_seq][['abertura', 'maximo', 'minimo', 'fechamento']].values)
-        return np.array(entradas), np.array(saidas)
+def criar_sequencias(dados, tam_seq):
+    entradas, saidas = [], []
+    for i in range(len(dados) - 2*tam_seq):
+        entrada = dados.iloc[i : i + tam_seq].values
+        saida = dados.iloc[i + tam_seq : i + 2*tam_seq][['abertura', 'maximo', 'minimo', 'fechamento']].values
+        entradas.append(entrada)
+        saidas.append(saida)
+    return np.array(entradas), np.array(saidas)
+
 
     # Gerar X e y
     X, y = criar_sequencias(df, tam_seq)
