@@ -1,13 +1,12 @@
+#@title Preparar dados modelagem LSTM
 
 """
-Função que prepara os dados transformados para modelagem com LSTM:
+Script de preparação de dados para modelagem com LSTM:
 - Aplica normalização e padronização
+- Salva scaler de preço
+- Salva versão tratada em CSV
 - Cria sequências de entrada e saída
 - Divide em treino e teste
-- Salva o scaler de preço para uso posterior nas previsões
-
-Retorna:
-    X_treino, X_teste, y_treino, y_teste: arrays prontos para modelagem LSTM
 """
 
 import os
@@ -16,92 +15,67 @@ import pandas as pd
 import joblib
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-def preparar_dados_lstm(
-    path_dados,       # Caminho do CSV com os dados
-    tam_seq=32,       # Tamanho da sequência para entrada na LSTM
-    tx_treino=0.8     # Proporção dos dados para treino
-):
-    # Caminho do scaler
+def preparar_dados(path_dados):
     caminho_scaler_preco = '/content/Piloto_Day_Trade/models/LSTM/scalers/scaler_normalizacao_preco.pkl'
-
-    # Criar diretório do scaler se não existir
     os.makedirs(os.path.dirname(caminho_scaler_preco), exist_ok=True)
-
-    # Carregar dados transformados
     df = pd.read_csv(path_dados)
 
-    # Garantir colunas de data como datetime
     df['data'] = pd.to_datetime(df['data'], errors='coerce')
     df['data_previsao'] = pd.to_datetime(df['data_previsao'], errors='coerce')
 
-    # Definir colunas de preço
     preco_cols = ['abertura', 'maximo', 'minimo', 'fechamento']
-
-    # Garantir que não há valores ausentes nos preços
     df = df.dropna(subset=preco_cols)
 
-    # Salvar scaler de preço com base nos valores reais (antes da normalização)
     scaler_preco = MinMaxScaler()
     scaler_preco.fit(df[preco_cols])
     joblib.dump(scaler_preco, caminho_scaler_preco)
 
-    print("Scaler de preço salvo com sucesso.")
-
-    # Definir colunas para padronização e normalização
     padronizar_cols = ['retorno', 'volatilidade', 'MACD', 'Signal_Line', 'rsi']
-    normalizar_cols = ['abertura', 'minimo', 'maximo', 'fechamento', 'volume', 'SMA_10', 'EMA_10', 'OBV',
-                       'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
-                       'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
-                       'fechamento_lag3', 'retorno_lag3', 'volume_lag3']
+    normalizar_cols = [
+        'abertura', 'minimo', 'maximo', 'fechamento', 'volume', 'SMA_10', 'EMA_10', 'OBV',
+        'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
+        'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
+        'fechamento_lag3', 'retorno_lag3', 'volume_lag3'
+    ]
 
-    # Inicializar scalers
-    scaler_standard = StandardScaler()
-    scaler_minmax = MinMaxScaler()
+    df[padronizar_cols] = StandardScaler().fit_transform(df[padronizar_cols])
+    df[normalizar_cols] = MinMaxScaler().fit_transform(df[normalizar_cols])
 
-    # Aplicar transformações
-    df[padronizar_cols] = scaler_standard.fit_transform(df[padronizar_cols])
-    df[normalizar_cols] = scaler_minmax.fit_transform(df[normalizar_cols])
-
-    # Converter colunas categóricas para int
     categorias = ['dia_da_semana_entrada', 'dia_da_semana_previsao', 'hora_num', 'minuto', 'mercado_aberto']
     df[categorias] = df[categorias].astype(int)
 
-    # Manter apenas colunas numéricas
-    df = df.select_dtypes(include=['number'])
-    df = df.dropna()   
+    df = df.select_dtypes(include='number').dropna()
 
-    # Salvar versao dados preparados
-    caminho_csv_preparado = '/content/Piloto_Day_Trade/data/transformed/dados_preparados_para_modelagem.csv'
-    df.to_csv(caminho_csv_preparado, index=False)
-    print(f"✅ Dados preparados salvos em: {caminho_csv_preparado}")
+    caminho_preparado = '/content/Piloto_Day_Trade/data/transformed/dados_preparados_para_modelagem.csv'
+    os.makedirs(os.path.dirname(caminho_preparado), exist_ok=True)
+    df.to_csv(caminho_preparado, index=False)
+    print(f"✅ Dados preparados salvos em: {caminho_preparado}")
 
+    return df
 
-def criar_sequencias(dados, tam_seq):
+def criar_sequencias(df, tam_seq=96):
     entradas, saidas = [], []
-    for i in range(len(dados) - 2*tam_seq):
-        entrada = dados.iloc[i : i + tam_seq].values
-        saida = dados.iloc[i + tam_seq : i + 2*tam_seq][['abertura', 'maximo', 'minimo', 'fechamento']].values
+    for i in range(len(df) - 2*tam_seq):
+        entrada = df.iloc[i : i + tam_seq].values
+        saida = df.iloc[i + tam_seq : i + 2*tam_seq][['abertura', 'maximo', 'minimo', 'fechamento']].values
         entradas.append(entrada)
         saidas.append(saida)
     return np.array(entradas), np.array(saidas)
 
-
-    # Gerar X e y
-    X, y = criar_sequencias(df, tam_seq)
-
-    # Dividir entre treino e teste
+def dividir_treino_teste(X, y, tx_treino=0.8):
     tamanho_treino = int(tx_treino * len(X))
-    X_treino, X_teste = X[:tamanho_treino], X[tamanho_treino:]
-    y_treino, y_teste = y[:tamanho_treino], y[tamanho_treino:]
+    return X[:tamanho_treino], X[tamanho_treino:], y[:tamanho_treino], y[tamanho_treino:]
 
+def preparar_dados_lstm(path_dados, tam_seq=96, tx_treino=0.8):
+    df_preparado = preparar_dados(path_dados)
+    X, y = criar_sequencias(df_preparado, tam_seq)
+    X_treino, X_teste, y_treino, y_teste = dividir_treino_teste(X, y, tx_treino)
     return X_treino, X_teste, y_treino, y_teste
 
-
-# Execução direta
 if __name__ == "__main__":
     path_dados = '/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv'
-    X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
-        path_dados=path_dados,
-        tam_seq=96,
-        tx_treino=0.8
-    )
+    X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(path_dados, tam_seq=96, tx_treino=0.8)
+
+    print("✅ Dados de treino e teste prontos:")
+    print(f"X_treino: {X_treino.shape}, y_treino: {y_treino.shape}")
+    print(f"X_teste: {X_teste.shape}, y_teste: {y_teste.shape}")
