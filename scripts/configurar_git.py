@@ -2,8 +2,6 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='/content/.env')
-
 def git_config():
     """Configura o Git localmente e sincroniza com o repositório remoto no GitHub."""
 
