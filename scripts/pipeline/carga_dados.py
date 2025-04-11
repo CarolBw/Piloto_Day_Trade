@@ -1,4 +1,6 @@
 
+#@title ## Definindo script de carga de dados
+
 import sqlite3
 import pandas as pd
 import os
@@ -6,6 +8,7 @@ import os
 # Caminho para o banco de dados
 db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
 assert os.path.exists(db_path), f"Banco de dados não encontrado em {db_path}"
+
 # Leitura dos dados a serem carregados
 df = pd.read_csv("/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv")
 
@@ -14,8 +17,22 @@ def carregar_dados(df: pd.DataFrame):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    for idx, row in df.iterrows():
-        id_tempo = idx + 1  
+    registros_inseridos = 0
+
+    for _, row in df.iterrows():
+        # Verifica se já existe registro com a mesma data e hora na dim_tempo
+        cursor.execute("""
+            SELECT id_tempo FROM dim_tempo WHERE data = ? AND hora = ?
+        """, (row['data'], row['hora']))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            continue  # Já existe, pula
+
+        # Gerar próximo id_tempo
+        cursor.execute("SELECT MAX(id_tempo) FROM dim_tempo")
+        max_id = cursor.fetchone()[0]
+        id_tempo = 1 if max_id is None else max_id + 1
 
         # 1. Inserir na dim_tempo
         cursor.execute("""
@@ -54,10 +71,11 @@ def carregar_dados(df: pd.DataFrame):
             VALUES (?, ?, ?, ?, ?, ?)
         """, (id_tempo, id_tempo, row['abertura'], row['minimo'], row['maximo'], row['fechamento']))
 
+        registros_inseridos += 1
+
     conn.commit()
     conn.close()
-    print(f"✅ Carga concluída com {len(df)} registros.")
+    print(f"✅ Carga incremental concluída. {registros_inseridos} novos registros inseridos.")
 
 if __name__ == "__main__":
     carregar_dados(df)
-
