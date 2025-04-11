@@ -4,6 +4,15 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 
+from Piloto_Day_Trade.scripts.modelagem_machine_learning.preparar_dados_modelagem_LSTM import preparar_dados_lstm
+
+path_dados = '/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv'
+
+X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
+    path_dados=path_dados,
+    tam_seq=96,
+    tx_treino=0.8
+)
 # 🔧 Construção do modelo
 LSTM_model = Sequential([
 
