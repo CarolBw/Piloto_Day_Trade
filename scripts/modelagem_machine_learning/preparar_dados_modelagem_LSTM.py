@@ -22,7 +22,7 @@ def preparar_dados_lstm(
     tx_treino=0.8     # Proporção dos dados para treino
 ):
     # Caminho do scaler
-    caminho_scaler_preco = '/content/Piloto_Day_Trade/models/scalers/scaler_normalizacao_preco.pkl'
+    caminho_scaler_preco = '/content/Piloto_Day_Trade/models/LSTM/scalers/scaler_normalizacao_preco.pkl'
 
     # Criar diretório do scaler se não existir
     os.makedirs(os.path.dirname(caminho_scaler_preco), exist_ok=True)
@@ -97,7 +97,7 @@ def preparar_dados_lstm(
 
 # Execução direta
 if __name__ == "__main__":
-    path_dados = '/content/Piloto_Day_Trade/data/dados_transformados.csv'
+    path_dados = '/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv'
     X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(
         path_dados=path_dados,
         tam_seq=96,
