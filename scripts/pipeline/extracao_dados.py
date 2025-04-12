@@ -23,7 +23,7 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
             ultima_data = pd.to_datetime(df.index.max())
             data_inicio = ultima_data + timedelta(minutes=30)
 
-    print(f"🔄 Extraindo dados de {data_inicio.strftime('%Y-%m-%d %H:%M:%S')} até {data_fim.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Extraindo dados de {data_inicio.strftime('%Y-%m-%d %H:%M:%S')} até {data_fim.strftime('%Y-%m-%d %H:%M:%S')}")
 
     # Extrai os dados do Yahoo Finance
     df_novo = yf.download(
@@ -47,7 +47,7 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
 
         # Salva os dados atualizados no arquivo CSV
         df_total.to_csv(dados_brutos)
-        print("✅ Dados salvos com sucesso.")
+        print("Dados salvos com sucesso.")
 
     # Filtra os dados para o horário entre 10:00 e 18:00
     df_filtrado = df_total.between_time("10:00", "18:00")
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     ticker = "BBDC4.SA"  # Ticker da ação
     intervalo = "5m"  # Intervalo de tempo (5 minutos)
     dias = 45  # Número de dias a partir de hoje para buscar os dados
-    dados_brutos = "/content/Piloto_Day_Trade/data/dados_brutos.csv"  # Caminho do arquivo de dados brutos
+    dados_brutos = "/content/Piloto_Day_Trade/data/raw/dados_brutos.csv"  # Caminho do arquivo de dados brutos
     df = extrair_dados(ticker, dias, intervalo, dados_brutos)

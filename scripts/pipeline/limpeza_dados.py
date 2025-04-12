@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-def limpeza_dados(df):
+def limpeza_dados(df, path_dados_limpos):
     # Verificar se os dados estão corretos
     print("Dados originais:")
     print(df.head())
@@ -10,7 +10,7 @@ def limpeza_dados(df):
     # Remover as primeiras duas linhas (com 'Ticker' e 'Datetime')
     df = df.iloc[2:].copy()
 
-    # Verificar após a remoção das linhas iniciais
+    # Verificar após a remoção 
     print("Após remoção das duas primeiras linhas:")
     print(df.head())
 
@@ -20,7 +20,7 @@ def limpeza_dados(df):
     # Definir o fuso horário como "America/Sao_Paulo"
     df.index = df.index.tz_convert("America/Sao_Paulo")
 
-    # Remover a referência de fuso horário (deixar o horário local sem informação de timezone)
+    # Remover a referência de fuso horário 
     df.index = df.index.tz_localize(None)
 
     # Criar a coluna 'hora' com base no índice
@@ -106,7 +106,7 @@ def limpeza_dados(df):
     print(df.head(10))
 
     # Salva os dados limpos em CSV
-    df.to_csv(f"/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv", index=False)
+    df.to_csv(path_dados_limpos, index=False)
     print(f"\nOs dados foram limpos e salvos em csv.")
 
     return df
@@ -114,8 +114,9 @@ def limpeza_dados(df):
 
 if __name__ == "__main__":
     # Ler os dados brutos
-    dados_brutos = pd.read_csv(f"/content/Piloto_Day_Trade/data/dados_brutos.csv", index_col=0, parse_dates=True, dayfirst=True)
+    dados_brutos = pd.read_csv(f"/content/Piloto_Day_Trade/data/raw/dados_brutos.csv", index_col=0, parse_dates=True, dayfirst=True)
+    path_dados_limpos = '/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv'
     # Aplicar limpeza nos dados
-    df_limpo = limpeza_dados(dados_brutos)
+    df_limpo = limpeza_dados(dados_brutos, path_dados_limpos)
 
 

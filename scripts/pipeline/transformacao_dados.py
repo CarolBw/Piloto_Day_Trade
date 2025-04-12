@@ -29,34 +29,34 @@ def carregar_dados(arquivo):
         return arquivo  # Se já for um DataFrame, retorna diretamente
 
     if not os.path.exists(arquivo):
-        print(f"⚠️ O arquivo {arquivo} não existe. Criando um novo DataFrame vazio.")
+        print(f"O arquivo {arquivo} não existe. Criando um novo DataFrame vazio.")
         return pd.DataFrame()
 
     try:
         df = pd.read_csv(arquivo, parse_dates=["data"])
-        print(f"✅ Arquivo {arquivo} carregado com {len(df)} linhas.")
+        print(f"Arquivo {arquivo} carregado com {len(df)} linhas.")
         return df if not df.empty else pd.DataFrame()
     except Exception as e:
-        print(f"❌ Erro ao carregar {arquivo}: {e}")
+        print(f"Erro ao carregar {arquivo}: {e}")
         return pd.DataFrame()
 
 def obter_ultima_data(df):
     """Retorna a última data disponível nos dados."""
     if "data" in df.columns and not df.empty:
         ultima_data = df["data"].max()
-        print(f"📅 Última data encontrada nos dados: {ultima_data}")
+        print(f"Última data encontrada nos dados: {ultima_data}")
         return ultima_data
     return None
 
 def filtrar_novos_dados(df, ultima_data):
     """Filtra os dados para incluir apenas os novos registros."""
     if df.empty:
-        print("⚠️ Nenhum dado limpo disponível.")
+        print("Nenhum dado limpo disponível.")
         return pd.DataFrame()
 
     if ultima_data:
         df_novo = df[df["data"] > ultima_data]
-        print(f"📊 Dados novos filtrados: {len(df_novo)} registros encontrados.")
+        print(f"Dados novos filtrados: {len(df_novo)} registros encontrados.")
         return df_novo
     return df
 
@@ -64,13 +64,13 @@ def calcular_indicadores(df):
     """Calcula indicadores técnicos e gera novas features para análise de dados financeiros."""
 
     if df.empty:
-        print("⚠️ Nenhum dado disponível para calcular indicadores.")
+        print("Nenhum dado disponível para calcular indicadores.")
         return df
 
     colunas_necessarias = ["data", "hora", "abertura", "minimo", "maximo", "fechamento", "volume"]
 
     if not all(col in df.columns for col in colunas_necessarias):
-        print("❌ Dados insuficientes para cálculo de indicadores.")
+        print("Dados insuficientes para cálculo de indicadores.")
         return df
 
     # Ordenação correta dos dados
@@ -110,14 +110,14 @@ def calcular_indicadores(df):
     # Ordenação final
     df = df.sort_values(by=['data', 'hora'], ascending=[False, True])
 
-    print(f"✅ Indicadores calculados. Tamanho final do DataFrame: {len(df)} linhas.")
+    print(f"Indicadores calculados. Tamanho final do DataFrame: {len(df)} linhas.")
     return df
 
 def adicionar_features_temporais(df):
     """Adiciona colunas temporais para análise de séries temporais."""
 
     if df.empty:
-        print("⚠️ Nenhum dado disponível para processamento.")
+        print("Nenhum dado disponível para processamento.")
         return df
 
     # Converter 'data' para datetime se necessário
@@ -157,7 +157,7 @@ def transformar_dados(dados_limpos, dados_transformados):
 
 
     if df_transformado.empty:
-        print("📂 Nenhum dado transformado encontrado. Criando novo DataFrame.")
+        print("Nenhum dado transformado encontrado. Criando novo DataFrame.")
 
     ultima_data = obter_ultima_data(df_transformado)
     novos_dados = filtrar_novos_dados(df_limpo, ultima_data)
@@ -170,16 +170,16 @@ def transformar_dados(dados_limpos, dados_transformados):
         pasta = os.path.dirname(dados_transformados)
         if not os.path.exists(pasta):
             os.makedirs(pasta)
-            print(f"📂 Criando diretório: {pasta}")
+            print(f"Criando diretório: {pasta}")
 
         df_final.to_csv(dados_transformados, index=False)
-        print(f"✅ Dados transformados salvos em {dados_transformados} ({len(df_final)} registros)")
-        print(f"📅 Última data disponível nos dados: {df_final['data'].max()}")
+        print(f"Dados transformados salvos em {dados_transformados} ({len(df_final)} registros)")
+        print(f"Última data disponível nos dados: {df_final['data'].max()}")
         print(f"df_final: {df_final.head(5)}")
         return df_final
     else:
-        print("⏭️ Nenhum novo dado para processar.")
-        print(f"📅 Última data disponível nos dados: {df_transformado['data'].max()}")
+        print("⏭Nenhum novo dado para processar.")
+        print(f"Última data disponível nos dados: {df_transformado['data'].max()}")
         print(f"df_transformado: {df_transformado.head(5)}")
         return df_transformado
 
