@@ -1,5 +1,7 @@
 
-# @title Executar pipeline completo de dados com importações diretas
+# @title Executar pipeline 
+
+# @title Executar pipeline
 
 import os
 import pandas as pd
@@ -12,26 +14,20 @@ from scripts.pipeline.criar_banco_dimensional import criar_banco
 from scripts.pipeline.gerar_catalogo_dados import gerar_catalogo
 from scripts.modelagem_machine_learning.preparar_dados_modelagem_LSTM import preparar_dados_lstm
 
-def executar_pipeline():
+def executar_pipeline(ticker, intervalo, dias, caminho_bruto, caminho_limpo, caminho_transformado, tam_seq, tx_treino):
     print("\nIniciando execução completa do pipeline...")
 
     # Etapa 1: Extração
     print("Executando: Extração de dados")
-    ticker = "BBDC4.SA"
-    intervalo = "5m"
-    dias = 45
-    caminho_bruto = "/content/Piloto_Day_Trade/data/raw/dados_brutos.csv"
     extrair_dados(ticker, dias, intervalo, caminho_bruto)
 
     # Etapa 2: Limpeza
     print("Executando: Limpeza de dados")
     df_bruto = pd.read_csv(caminho_bruto, index_col=0, parse_dates=True, dayfirst=True)
-    caminho_limpo = "/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv"
     limpeza_dados(df_bruto, caminho_limpo)
 
     # Etapa 3: Transformação
     print("Executando: Transformação de dados")
-    caminho_transformado = "/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv"
     transformar_dados(caminho_limpo, caminho_transformado)
 
     # Etapa 4: Criar banco dimensional
@@ -51,11 +47,22 @@ def executar_pipeline():
     print("Executando: Preparação de dados para LSTM")
     preparar_dados_lstm(
         path_dados=caminho_transformado,
-        tam_seq=96,
-        tx_treino=0.8
+        tam_seq=tam_seq,
+        tx_treino=tx_treino
     )
 
     print("\nPipeline finalizado com sucesso.")
 
 if __name__ == "__main__":
-    executar_pipeline()
+    # Chamada com parâmetros do projeto
+    ticker = "BBDC4.SA"
+    intervalo = "5m"
+    dias = 45
+    caminho_bruto = "/content/Piloto_Day_Trade/data/raw/dados_brutos.csv"
+    caminho_limpo = "/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv"
+    caminho_transformado = "/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv"
+    tam_seq = 96
+    tx_treino = 0.8
+
+    executar_pipeline(ticker, intervalo, dias, caminho_bruto, caminho_limpo, caminho_transformado, tam_seq, tx_treino)
+
