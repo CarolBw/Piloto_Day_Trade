@@ -83,4 +83,4 @@ cursor.executescript(sql_script)
 # Confirma e fecha
 conn.commit()
 conn.close()
-print("✅ Banco e tabelas criados com sucesso.")
+print("Banco e tabelas criados com sucesso.")

@@ -5,13 +5,6 @@ import sqlite3
 import pandas as pd
 import os
 
-# Caminho para o banco de dados
-db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
-assert os.path.exists(db_path), f"Banco de dados não encontrado em {db_path}"
-
-# Leitura dos dados a serem carregados
-df = pd.read_csv("/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv")
-
 # Função para carregar dados
 def carregar_dados(df: pd.DataFrame):
     conn = sqlite3.connect(db_path)
@@ -75,7 +68,13 @@ def carregar_dados(df: pd.DataFrame):
 
     conn.commit()
     conn.close()
-    print(f"✅ Carga incremental concluída. {registros_inseridos} novos registros inseridos.")
+    print(f"Carga incremental concluída. {registros_inseridos} novos registros inseridos.")
 
 if __name__ == "__main__":
+  # Caminho para o banco de dados
+    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
+    assert os.path.exists(db_path), f"Banco de dados não encontrado em {db_path}"
+
+    # Leitura dos dados a serem carregados
+    df = pd.read_csv("/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv")
     carregar_dados(df)
