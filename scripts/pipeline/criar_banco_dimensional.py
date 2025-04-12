@@ -2,9 +2,7 @@
 import sqlite3
 import os
 
-def criar_banco():
-    # Caminho para o banco
-    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
+def criar_banco(db_path):
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
     # Conecta ao banco (cria se não existir)
