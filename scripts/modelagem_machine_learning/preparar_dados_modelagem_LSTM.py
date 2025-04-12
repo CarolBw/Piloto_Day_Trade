@@ -49,7 +49,7 @@ def preparar_dados(path_dados):
     caminho_preparado = '/content/Piloto_Day_Trade/data/transformed/dados_preparados_para_modelagem.csv'
     os.makedirs(os.path.dirname(caminho_preparado), exist_ok=True)
     df.to_csv(caminho_preparado, index=False)
-    print(f"✅ Dados preparados salvos em: {caminho_preparado}")
+    print(f"Dados preparados salvos em: {caminho_preparado}")
 
     return df
 
@@ -76,6 +76,6 @@ if __name__ == "__main__":
     path_dados = '/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv'
     X_treino, X_teste, y_treino, y_teste = preparar_dados_lstm(path_dados, tam_seq=96, tx_treino=0.8)
 
-    print("✅ Dados de treino e teste prontos:")
+    print("Dados de treino e teste prontos:")
     print(f"X_treino: {X_treino.shape}, y_treino: {y_treino.shape}")
     print(f"X_teste: {X_teste.shape}, y_teste: {y_teste.shape}")
