@@ -1,4 +1,6 @@
 
+#@title ## Limpeza de dados
+
 import pandas as pd
 
 def limpeza_dados(df, path_dados_limpos):
@@ -10,7 +12,7 @@ def limpeza_dados(df, path_dados_limpos):
     # Remover as primeiras duas linhas (com 'Ticker' e 'Datetime')
     df = df.iloc[2:].copy()
 
-    # Verificar após a remoção 
+    # Verificar após a remoção
     print("Após remoção das duas primeiras linhas:")
     print(df.head())
 
@@ -20,7 +22,7 @@ def limpeza_dados(df, path_dados_limpos):
     # Definir o fuso horário como "America/Sao_Paulo"
     df.index = df.index.tz_convert("America/Sao_Paulo")
 
-    # Remover a referência de fuso horário 
+    # Remover a referência de fuso horário
     df.index = df.index.tz_localize(None)
 
     # Criar a coluna 'hora' com base no índice
