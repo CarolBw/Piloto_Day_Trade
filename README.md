@@ -62,7 +62,7 @@ O pipeline está estruturado em sete etapas principais:
 - Comparativo entre preços previstos vs. reais
 - Validação das previsões para abertura, máxima, mínima e fechamento
 - Importância das variáveis
-- Interpretação dos erros e possíveis melhorias 
+- Interpretação dos erros e possíveis melhorias
 
 ## 4. Perguntas a Serem Respondidas
 - É possível prever com precisão a movimentação intradiária a cada 5 minutos?
