@@ -1,4 +1,4 @@
-# Configurar Git e sincronizar com GitHub
+#@title Script operacional para configurar Git e sincronizar com GitHub
 import os
 from dotenv import load_dotenv
 
