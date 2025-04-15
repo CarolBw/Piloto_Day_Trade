@@ -1,0 +1,40 @@
+# Arquivos de configuração do Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Arquivos do Jupyter/Colab
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Ambiente virtual do Python
+venv/
+env/
+.venv/
+.env/
+
+# Arquivos de configuração do editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Arquivos temporários do sistema operacional
+*.swp
+*.bak
+*.tmp
+
+# Arquivos de cache
+*.cache
+
+# Arquivos de banco de dados SQLite (se você usar)
+*.db
+*.sqlite3
+
+# Arquivos gerados pela execução de notebooks no Colab
+/content/
+
+# Outras configurações específicas do ambiente (por exemplo, arquivos de configuração do Colab)
+config.yaml
