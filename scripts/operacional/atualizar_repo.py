@@ -1,6 +1,4 @@
 
-#@title Função operacional para atualizar repositório remoto
-
 import subprocess
 import os
 import dotenv
@@ -39,7 +37,7 @@ def atualizar_repo(commit_message="Atualizando arquivos"):
                 'A': 'Adicionado',
                 'D': 'Deletado',
                 'R': 'Renomeado',
-                '??': 'Não rastreado'
+                '??': 'Novo arquivo encontrado'
             }.get(status_code, f"Outro ({status_code})")
             print(f"  - {status_label}: {file_path}")
 
@@ -49,10 +47,15 @@ def atualizar_repo(commit_message="Atualizando arquivos"):
         print(f"Realizando commit com a mensagem: '{commit_message}'")
         subprocess.run(['git', 'commit', '-m', commit_message], check=True)
 
-        print("Enviando alterações para o repositório remoto...")
-        subprocess.run(['git', 'push', 'origin', 'main'], check=True)
+        print("Tentando enviar as alterações para o repositório remoto...")
+        result = subprocess.run(['git', 'push', 'origin', 'main'], check=False, capture_output=True, text=True)
 
-        print("Arquivos atualizados com sucesso na branch 'main'.")
+        # Verifica se houve erro no push
+        if result.returncode != 0:
+            print("Erro ao enviar alterações. Detalhes do erro:")
+            print(result.stderr)  # Exibe a mensagem de erro detalhada
+        else:
+            print("Arquivos atualizados com sucesso na branch 'main'.")
 
     except subprocess.CalledProcessError as e:
         print("Erro ao executar comandos Git.")
