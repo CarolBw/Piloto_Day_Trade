@@ -12,7 +12,7 @@ logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 dotenv.load_dotenv()
 
 """
-Essa função tem como objetivo extrair dados históricos de um ativo financeiro do Yahoo Finance 
+Essa função tem como objetivo extrair dados históricos de um ativo financeiro do Yahoo Finance
 com controle de incremental, salvando tudo em um CSV que serve como base bruta do pipeline.
 Etapas:
 - Define intervalo de coleta:
@@ -88,7 +88,7 @@ def extrair_dados(ticker, dias, intervalo, dados_brutos):
         df_total = (
             df_total.drop_duplicates()
             .dropna(thresh=df_total.shape[1] * 0.5)
-            
+
         )
 
         df_total.to_csv(dados_brutos)
