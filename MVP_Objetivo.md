@@ -51,7 +51,7 @@ O projeto será estruturado em sete etapas principais:
 
 ### 4. Perguntas a Serem Respondidas
 
-- É possível prever com precisão a movimentação intradiária de um ativo a cada 15 minutos?
+- É possível prever com precisão a movimentação intradiária de um ativo a cada 5 minutos?
 - Os dados do dia anterior fornecem informações suficientes para a previsão do dia seguinte?
 - A modelagem com LSTM captura corretamente as tendências de curto prazo?
 - A previsão da movimentação intradiária também permite derivar com precisão as targets globais do dia (abertura, mínima, máxima e fechamento)?
