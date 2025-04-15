@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 def git_config():
     """Configura o Git localmente e sincroniza com o repositório remoto no GitHub."""
-
+    
     # Carregar variáveis do ambiente
     load_dotenv(dotenv_path='/content/.env')
 
@@ -24,9 +24,8 @@ def git_config():
 
     if os.path.isdir(PROJECT_NAME):
         print(f"[INFO] Diretório '{PROJECT_NAME}' já existe. Sincronizando...")
-
         os.chdir(PROJECT_NAME)
-
+        
         os.system("git init")
         os.system("git remote remove origin || true")
         os.system(f"git remote add origin {REPO_URL}")
@@ -35,7 +34,6 @@ def git_config():
         os.system("git pull origin main --allow-unrelated-histories --no-rebase")
     else:
         print(f"[INFO] Clonando o repositório '{PROJECT_NAME}'...")
-
         os.system(f"git clone {REPO_URL}")
         os.chdir(PROJECT_NAME)
 
