@@ -162,8 +162,7 @@ def adicionar_features_temporais(df):
 
     df['data'] = pd.to_datetime(df['data'], errors='coerce')
     df['dia_da_semana_entrada'] = df['data'].dt.weekday
-    df.loc[df['dia_da_semana_entrada'] == 4, 'dia_da_semana_previsao'] = (df['data'] + pd.DateOffset(days=3)).dt.weekday
-
+    
     if 'hora' in df.columns:
         df['hora'] = pd.to_datetime(df['hora'].astype(str), format='%H:%M:%S', errors='coerce').dt.time
         df['hora_num'] = df['hora'].apply(lambda x: x.hour if pd.notnull(x) else np.nan)
