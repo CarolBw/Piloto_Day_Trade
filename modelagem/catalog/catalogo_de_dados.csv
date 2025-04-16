@@ -16,7 +16,6 @@ dim_tempo,data,object,,formato YYYY-MM-DD,extraído de data/hora original,Fonte:
 dim_tempo,hora,object,,formato HH:MM:SS,extraído de data/hora original,Fonte: Yahoo Finance via yfinance
 dim_tempo,dia_da_semana_entrada,int,Dia da semana correspondente à data,"0=Segunda, ..., 6=Domingo",extraído de data/hora original,Fonte: Yahoo Finance via yfinance
 dim_indicadores,retorno,float,Retorno percentual do ativo no intervalo de 5 minutos,-0.05 a 0.05 (retorno percentual por intervalo de 5 min),cópia ou identificador,Fonte: Yahoo Finance via yfinance
-dim_indicadores,volatilidade,float,Volatilidade dos retornos do ativo em janela deslizante,0 a 0.1 (desvio padrão do retorno por janela de tempo),cópia ou identificador,Fonte: Yahoo Finance via yfinance
 dim_indicadores,SMA_10,float,Média móvel simples de 10 períodos calculada sobre os preços,valores numéricos contínuos,calculado internamente via engenharia de features técnicas,Fonte: Yahoo Finance via yfinance
 dim_indicadores,EMA_10,float,Média móvel exponencial de 10 períodos,valores numéricos contínuos,calculado internamente via engenharia de features técnicas,Fonte: Yahoo Finance via yfinance
 dim_indicadores,MACD,float,"Moving Average Convergence Divergence, indicador técnico",-5 a 5,calculado internamente via engenharia de features técnicas,Fonte: Yahoo Finance via yfinance
@@ -26,11 +25,13 @@ dim_indicadores,OBV,float,"On Balance Volume, indicador técnico baseado em volu
 dim_indicadores,retorno_lag1,float,Retorno percentual do ativo no intervalo de 5 minutos,-0.05 a 0.05 (retorno percentual por intervalo de 5 min),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
 dim_indicadores,retorno_lag2,float,Retorno percentual do ativo no intervalo de 5 minutos,-0.05 a 0.05 (retorno percentual por intervalo de 5 min),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
 dim_indicadores,retorno_lag3,float,Retorno percentual do ativo no intervalo de 5 minutos,-0.05 a 0.05 (retorno percentual por intervalo de 5 min),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
+dim_indicadores,retorno_log,float,Retorno percentual do ativo no intervalo de 5 minutos,-0.05 a 0.05 (retorno percentual por intervalo de 5 min),cópia ou identificador,Fonte: Yahoo Finance via yfinance
+dim_indicadores,volatilidade,float,Volatilidade dos retornos do ativo em janela deslizante,0 a 0.1 (desvio padrão do retorno por janela de tempo),cópia ou identificador,Fonte: Yahoo Finance via yfinance
 dim_lags,volume_lag1,float,Valor defasado de volume1,0 a 1.000.000 (valores inteiros positivos),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
 dim_lags,volume_lag2,float,Valor defasado de volume2,0 a 1.000.000 (valores inteiros positivos),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
 dim_lags,volume_lag3,float,Valor defasado de volume3,0 a 1.000.000 (valores inteiros positivos),calculado como valor defasado (lag),Fonte: Yahoo Finance via yfinance
 dim_operacional,dia_da_semana_previsao,float,Dia da semana correspondente à data,"0=Segunda, ..., 6=Domingo",extraído de data/hora original,Fonte: Yahoo Finance via yfinance
 dim_operacional,hora_num,int,Hora expressa como número inteiro,valores numéricos contínuos,extraído de data/hora original,Fonte: Yahoo Finance via yfinance
 dim_operacional,minuto,int,Minuto do intervalo de tempo,valores numéricos contínuos,extraído de data/hora original,Fonte: Yahoo Finance via yfinance
-dim_operacional,volume_dia,float,Volume de negociações do ativo no dia corrente,0 a 1.000.000 (valores inteiros positivos),cópia ou identificador,Fonte: Yahoo Finance via yfinance
+dim_operacional,volume_dia,int,Volume de negociações do ativo no dia corrente,0 a 1.000.000 (valores inteiros positivos),cópia ou identificador,Fonte: Yahoo Finance via yfinance
 dim_operacional,volume_dia_anterior,int,Volume de negociações do ativo no dia corrente,0 a 1.000.000 (valores inteiros positivos),cópia ou identificador,Fonte: Yahoo Finance via yfinance
