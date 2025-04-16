@@ -1,6 +1,4 @@
 
-# Script operacional para atualizar o repositorio remoto
-
 import os
 from dotenv import load_dotenv
 
