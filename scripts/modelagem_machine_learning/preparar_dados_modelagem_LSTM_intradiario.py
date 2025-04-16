@@ -1,6 +1,4 @@
 
-# @title Preparação dos dados para o modelo LSTM Intradiário
-
 import os
 import pandas as pd
 import numpy as np
@@ -17,14 +15,7 @@ def preparar_dados_lstm_intradiario(
     n_pontos_dia: int = None,
     verbose: bool = True
 ):
-    """
-    Prepara os dados normalizados e sequenciais para treinar LSTM em séries temporais intradiárias.
-
-    Retorna:
-        X: np.ndarray, formato (amostras, timesteps, features)
-        y: np.ndarray, formato (amostras, timesteps, targets)
-        datas_validas: list, datas correspondentes a cada amostra
-    """
+  
     df = df.copy()
 
     if "data" not in df.columns:
