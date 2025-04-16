@@ -193,8 +193,7 @@ def adicionar_features_diarias(df):
 
     return df
 
-def calcular_volatilidade(df, janela=20):
-    df = df_transformado.copy()    
+def calcular_volatilidade(df, janela=20):    
     # Garantir ordenação correta
     df = df.sort_values(['data', 'hora']).reset_index(drop=True)    
     # Calcular retorno logarítmico
