@@ -1,7 +1,39 @@
 
-#@title ## Limpeza de dados
-
 import pandas as pd
+
+"""
+A função recebe um csv com os dados brutos e segue as seguintes etapas:
+
+- Verificações Iniciais
+  - Exibe as 5 primeiras linhas e o resumo das colunas com `df.head()` e `df.info()`.
+- Ajustes Estruturais
+  - Remove as duas primeiras linhas do DataFrame (provavelmente metadados).
+  - Converte o índice em `datetime` no fuso UTC, depois para `America/Sao_Paulo`, e remove a referência de fuso.
+  - Extrai o horário (`%H:%M:%S`) e cria a coluna `hora`.
+  - Transforma o índice (datetime) em coluna chamada `data`.
+- Padronização e Conversões
+  - Remove a parte do horário da coluna `data`, mantendo só a data (`yyyy-mm-dd`).
+  - Renomeia colunas com nomes padronizados:
+    - `Open → abertura`
+    - `High → maximo`
+    - `Low → minimo`
+    - `Close → fechamento`
+    - `Volume → volume`
+  - Converte colunas numéricas para `float` arredondado e `volume` para `int`.
+- Organização e Filtros
+    - Reorganiza as colunas na ordem: `['data', 'hora', 'abertura', 'minimo', 'maximo', 'fechamento', 'volume']`.
+    - Remove duplicatas e linhas com mais de 50% de valores nulos.
+    - Converte `data` e `hora` para formatos adequados (`datetime` e `time`).
+    - Filtra apenas dias úteis (segunda a sexta).
+    - Filtra registros entre 09:55 e 18:05.
+- Ordena o DataFrame por `data` decrescente e `hora` crescente.
+- Salva o resultado limpo em CSV no caminho definido.
+
+Saida esperadsa:
+- DataFrame padronizado, sem duplicatas, com datas válidas e horários filtrados no intervalo de negociação.
+- Arquivo salvo: `/content/Piloto_Day_Trade/data/cleaned/dados_limpos.csv`
+
+"""
 
 def limpeza_dados(df, path_dados_limpos):
     # Verificar se os dados estão corretos
