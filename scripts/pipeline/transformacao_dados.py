@@ -156,14 +156,20 @@ def calcular_indicadores(df):
     return df
 
 # Adiciona colunas temporais com base na data e hora dos registros
+from pandas.tseries.offsets import BDay
+
 def adicionar_features_temporais(df):
     if df.empty:
         return df
 
     df['data'] = pd.to_datetime(df['data'], errors='coerce')       
 
-    # Cria o dia da semana (0 = segunda-feira, 6 = domingo)
+    # Cria o dia da semana da entrada (0 = segunda-feira, 6 = domingo)
     df['dia_da_semana_entrada'] = df['data'].dt.dayofweek
+
+    # Novo: cria o dia da semana da previsão (dia útil seguinte)
+    df['data_previsao'] = df['data'] + BDay(1)
+    df['dia_da_semana_previsao'] = df['data_previsao'].dt.dayofweek
 
     if 'hora' in df.columns:
         df['hora'] = pd.to_datetime(df['hora'].astype(str), format='%H:%M:%S', errors='coerce').dt.time
