@@ -33,6 +33,9 @@ Nulos (%) - volume_lag2,0.0
 Nulos (%) - fechamento_lag3,0.0
 Nulos (%) - retorno_lag3,0.0
 Nulos (%) - volume_lag3,0.0
+Nulos (%) - dia_da_semana_entrada,0.0
+Nulos (%) - data_previsao,0.0
+Nulos (%) - dia_da_semana_previsao,0.0
 Nulos (%) - hora_num,0.0
 Nulos (%) - minuto,0.0
 Nulos (%) - fechamento_dia,0.0
@@ -77,6 +80,9 @@ Valores únicos - volume_lag2,2007.0
 Valores únicos - fechamento_lag3,184.0
 Valores únicos - retorno_lag3,947.0
 Valores únicos - volume_lag3,2006.0
+Valores únicos - dia_da_semana_entrada,5.0
+Valores únicos - data_previsao,29.0
+Valores únicos - dia_da_semana_previsao,5.0
 Valores únicos - hora_num,8.0
 Valores únicos - minuto,12.0
 Valores únicos - fechamento_dia,27.0
@@ -119,6 +125,8 @@ Outliers (IQR) - volume_lag2,172.0
 Outliers (IQR) - fechamento_lag3,0.0
 Outliers (IQR) - retorno_lag3,192.0
 Outliers (IQR) - volume_lag3,172.0
+Outliers (IQR) - dia_da_semana_entrada,0.0
+Outliers (IQR) - dia_da_semana_previsao,0.0
 Outliers (IQR) - hora_num,0.0
 Outliers (IQR) - minuto,0.0
 Outliers (IQR) - fechamento_dia,0.0

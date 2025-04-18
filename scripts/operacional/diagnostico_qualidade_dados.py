@@ -1,5 +1,4 @@
 
-# diagnostico_qualidade_dados.py
 
 import pandas as pd
 import os
