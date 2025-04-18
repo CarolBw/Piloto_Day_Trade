@@ -88,5 +88,5 @@ def criar_banco(db_path):
     print("Banco e tabelas criados com sucesso.")
 
 if __name__ == "__main__":
-    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional_vf.db"
+    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
     criar_banco(db_path)
