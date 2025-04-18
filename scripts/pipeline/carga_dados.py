@@ -8,7 +8,7 @@ import os
 def carregar_dados(df: pd.DataFrame, db_path: str):
     # Lista de colunas obrigatórias que devem existir no DataFrame
     colunas_obrigatorias = [
-        'data', 'hora', 
+        'data', 'hora', 'dia_da_semana_entrada',
         'SMA_10', 'EMA_10', 'MACD', 'Signal_Line', 'rsi', 'OBV', 'retorno', 'volatilidade',
         'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
         'fechamento_lag2', 'retorno_lag2', 'volume_lag2',
@@ -106,7 +106,7 @@ def carregar_dados(df: pd.DataFrame, db_path: str):
 
 if __name__ == "__main__":
     # Caminho do banco de dados e arquivo CSV de dados transformados
-    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional_vf.db"
+    db_path = "/content/Piloto_Day_Trade/modelagem/database/banco_dimensional.db"
     df_path = "/content/Piloto_Day_Trade/data/transformed/dados_transformados.csv"
 
     # Verifica se o arquivo CSV existe
