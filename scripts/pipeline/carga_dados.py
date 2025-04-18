@@ -8,7 +8,7 @@ import os
 def carregar_dados(df: pd.DataFrame, db_path: str):
     # Lista de colunas obrigatórias que devem existir no DataFrame
     colunas_obrigatorias = [
-        'data', 'hora', 'dia_da_semana_entrada',
+        'data', 'hora', 
         'SMA_10', 'EMA_10', 'MACD', 'Signal_Line', 'rsi', 'OBV', 'retorno', 'volatilidade',
         'fechamento_lag1', 'retorno_lag1', 'volume_lag1',
         'fechamento_lag2', 'retorno_lag2', 'volume_lag2',

@@ -71,15 +71,13 @@ def criar_banco(db_path):
     -- Dimensão Operacional
     CREATE TABLE IF NOT EXISTS dim_operacional (
         id_operacional INTEGER PRIMARY KEY,
-        id_tempo INTEGER,
-        dia_da_semana_previsao INTEGER,
+        id_tempo INTEGER,        
         hora_num INTEGER,
-        minuto INTEGER,
-        mercado_aberto INTEGER,
-        fechamento_dia_anterior REAL,  -- Novo campo de fechamento diário anterior
-        volume_dia_anterior REAL,      -- Novo campo de volume diário anterior
-        maximo_dia_anterior REAL,     -- Novo campo de máximo diário anterior
-        minimo_dia_anterior REAL,     -- Novo campo de mínimo diário anterior
+        minuto INTEGER,        
+        fechamento_dia_anterior REAL,  
+        volume_dia_anterior REAL,      
+        maximo_dia_anterior REAL,     
+        minimo_dia_anterior REAL,     
         FOREIGN KEY (id_tempo) REFERENCES dim_tempo(id_tempo)
     );
     """
