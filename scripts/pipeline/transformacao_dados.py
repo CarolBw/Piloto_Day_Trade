@@ -187,7 +187,12 @@ def adicionar_features_diarias(df):
         return df
 
     df['volume'] = df['volume'].astype(int)
-    df['fechamento_dia'] = df.groupby('data')['fechamento'].transform('last')
+
+    # Fechamento do último horário de cada dia
+    fechamento_dia_map = df.groupby('data').apply(lambda x: x.loc[x['hora'].idxmax(), 'fechamento'])
+    df['fechamento_dia'] = df['data'].map(fechamento_dia_map)
+
+    # Demais agregações
     df['volume_dia'] = df.groupby('data')['volume'].transform('sum').fillna(0).astype(int)
     df['maximo_dia'] = df.groupby('data')['maximo'].transform('max')
     df['minimo_dia'] = df.groupby('data')['minimo'].transform('min')
@@ -199,6 +204,7 @@ def adicionar_features_diarias(df):
     df['minimo_dia_anterior'] = df['minimo_dia'].shift(1)
 
     return df
+
 
 def calcular_volatilidade(df, janela=20):    
     # Garantir ordenação correta
