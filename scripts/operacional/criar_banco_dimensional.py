@@ -43,7 +43,6 @@ def criar_banco(db_path):
         ATR REAL,
         retorno REAL,
         volatilidade REAL,
-        volume_dia REAL,  -- Adicionando a coluna volume_dia
         FOREIGN KEY (id_tempo) REFERENCES dim_tempo(id_tempo)
     );
 
